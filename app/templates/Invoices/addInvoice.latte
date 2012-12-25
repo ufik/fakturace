@@ -1,0 +1,53 @@
+{#content}
+
+<h1>Formulář faktur</h1>
+
+<input type="hidden" id="autocompleteUrl" value="{link Invoices:getProducts}" />
+<input type="hidden" id="getProducts" value="{link Invoices:getProductsByIdInvoice id => $idInvoice}" />
+
+{control invoiceForm}
+
+<script>
+	
+	$.get($("#getProducts").val(), function(data){
+		for(var i=0; i<data.length;i++){
+			createProductRow(data[i]);
+		}
+	});
+	
+	$(".date").datepicker();
+	
+	$( "#frm-invoiceForm-productsAutoComplete" ).autocomplete({
+		 source: $("#autocompleteUrl").val(),
+         minLength: 2,
+         select: function( event, ui ) {
+             event.preventDefault();
+        	 
+        	 $("#frm-invoiceForm-productsAutoComplete").val("");
+             
+             createProductRow(ui.item);
+         }
+	});
+	
+	function createProductRow(item){
+		
+		if(typeof item.count =="undefined") item.count = 1;
+		
+		var row = "<div><input type='hidden' name='products[]' value='"+item.id+"' />";
+		row += "Název: <input type='text' name='names[]' value='"+item.value+"' />";
+		row += "Dph: <select name='dph[]'><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select>";
+		row += "Cena: <input type='text' name='prices[]' value='"+item.price+"' />";
+		row += "Počet: <input type='text' name='counts[]' value='"+item.count+"' />";
+		row += "<a href='#' onclick='$(this).parent().remove(); return false;'>&times; Smazat položku</div>";
+		
+		$("#frm-invoiceForm-productsAutoComplete").after(row);
+	}
+</script>
+
+{/#}
+
+{#actionMenu}
+
+<li><a href="{link Invoices:}" class="ajax">Zpět na výpis faktur</a></li>
+
+{/#}

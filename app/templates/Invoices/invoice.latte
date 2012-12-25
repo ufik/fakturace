@@ -1,0 +1,136 @@
+<div class="invoiceWrapper">
+	<h1>Faktura č. {$data['number']}</h1>
+	
+	<style>
+	table {
+		width: 100%;
+		text-align: left;
+		vertical-align: top;
+	}
+	
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+	
+	.even {
+		background-color: grey;
+	}
+	</style>
+	
+	<table>
+		<tbody>
+			<tr>
+				<th>Dodavatel</th>
+				<th>Odběratel</th>
+			</tr>
+			<tr>
+				<td style="width: 50%;">
+					<div>{$settings['invoice_company']}</div>
+					<div>{$settings['invoice_street']}</div>
+					<div>{$settings['invoice_psc']} {$settings['invoice_city']}</div>
+					<div>IČ: {$settings['invoice_ic']}</div>
+					<div>DIČ: {$settings['invoice_dic']}</div>
+					<div>{$settings['invoice_registration']}</div>
+				</td>
+				<td>
+					<div>{$odberatel['name']}</div>
+					<div>{$odberatel['ulice']}</div>
+					<div>{$odberatel['psc']} {$odberatel['mesto']}</div>
+					<div>IČ: {$odberatel['ico']}</div>
+					<div>DIČ: {$odberatel['dic']}</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Příjemce</th>
+				<th>Platební údaje</th>
+			</tr>
+			<tr>
+				<td style="width: 50%;">
+					<div>{$prijemce['name']}</div>
+					<div>{$prijemce['ulice']}</div>
+					<div>{$prijemce['psc']} {$prijemce['mesto']}</div>
+					<div>IČ: {$prijemce['ico']}</div>
+					<div>DIČ: {$prijemce['dic']}</div>
+				</td>
+				<td>
+					<div>Variabilní symbol: {$data['variable_code']}</div>
+					<div>Konstantní symbol: {$data['constant_code']}</div>
+					<div>Způsob úhrady: {$data['payment_type']}</div>
+					<div>Datum vystavení: {$data['datum_vystaveni']|date:"%d.%m.%y"}</div>
+					<div>Datum zdanitelného plnění: {$data['datum_zdan_plneni']|date:"%d.%m.%y"}</div>
+					<div><strong>Datum splatnosti: {$data['datum_splatnosti']|date:"%d.%m.%y"}</strong></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div>Bankovní spojení: {$settings['bank_name']} {$settings['bank_account_number']}, 
+					Swift: {$settings['bank_swift']}, 
+					Iban: {$settings['bank_iban']}</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				
+				<div><strong>Fakturujeme Vám</strong></div>
+				<div>{$data['text']}</div>
+				<br />
+				
+				<table class="invoice-items">
+					<tbody>
+						<tr>
+							<th>Název</th>
+							<th>Počet</th>
+							<th>DPH</th>
+							<th>Cena bez DPH</th>
+							<th>Cena s DPH</th>
+							<th>Cena celkem bez DPH</th>
+							<th>Cena celkem s DPH</th>
+						</tr>
+						{foreach $products as $p}
+						<tr {if $iterator->isEven()}class="even"{else}class="odd"{/if}>
+							<td>{$p["nazev"]}</td>
+							<td>{$p["pocet"]}</td>
+							<td>{$p["dph"]}%</td>
+							<td>{$p["cena"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td>{$p["cena_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td>{$p["cena_celkem"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td>{$p["cena_celkem_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+						</tr>
+						{/foreach}
+					</tbody>
+				</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Razítko a podpis:
+				</td>
+				<td>
+					<table>
+						<tbody>
+							<tr>
+								<th>Celkem:</th>
+								<td>
+									{$total|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+							<tr>
+								<th>Součet DPH:</th>
+								<td>
+									{$vat|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+							<tr>
+								<th>Celkem s DPH:</th>
+								<td>
+									{$totalVat|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

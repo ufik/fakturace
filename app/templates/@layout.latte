@@ -1,0 +1,119 @@
+{**
+ * My Application layout template.
+ *
+ * @param string   $basePath web base path
+ * @param string   $robots   tell robots how to index the content of a page (optional)
+ * @param array    $flashes  flash messages
+ *}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="robots" content="{$robots}" n:ifset="$robots">
+
+	<title>{#title|striptags|upper}Fakturace{/#}</title>
+	
+	<link rel="stylesheet" media="all" href="{$basePath}/css/style.css">
+	<link rel="stylesheet" media="all" href="{$basePath}/css/grid.css">
+	<link rel="stylesheet" media="all" href="{$basePath}/css/flick/jquery-ui-1.9.1.custom.css">
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
+	{#head}{/#}
+</head>
+
+<body>
+	<script> document.body.className+=' js' </script>
+
+	<header>
+		
+		<div class="logo"></div>
+		
+		<a n:href="sign:out" class="logout">Odhlásit se</a>
+		
+		<a class="ajax" n:href="Settings:">
+			<div class="settings-button">
+				
+			</div>
+		</a>
+		
+	</header>
+	
+	<section class="settings">
+		<section class="pannel">
+			<span class="close">&times;</span>
+			<span class="maximize"></span>
+		</section>
+		<h1>Nastavení systému</h1>
+	</section>
+	
+	<aside class="leftMenu">
+		
+		<ul>
+			<li>
+				<a href="{link Contacts:}" class="ajax"><span></span>Adresář kontaktů</a>
+			</li>
+			<li>
+				<a href="{link Products:}" class="ajax"><span></span>Číselník produktů</a>
+			</li>
+			<li>
+				<a href="{link Series:}" class="ajax"><span></span>Řady faktur</a>
+			</li>
+			<li>
+				<a href="{link Invoices:}" class="ajax"><span></span>Faktury</a>
+			</li>
+		</ul>
+		
+		<hr />
+		
+		{snippet actionMenu}
+			<ul>
+				{#actionMenu}{/#}
+			</ul>
+		{/snippet}
+		
+		<section class="messenger">
+			<span class="title">Messenger v0.1</span>
+			<ul>
+				<li>
+					<a href="{link Messenger:new}">Napsat zprávu</a>
+				</li>
+				<li>
+					<a href="{link Messenger:inbox}">Přečíst zprávy</a>
+				</li>
+				<li>
+					<a href="{link Messenger:help}">Nápověda</a>
+				</li>
+			</ul>
+		</section>
+		
+	</aside>
+	
+	<div class="content">
+	
+		{snippet flashMessages}
+			<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+		{/snippet}
+	
+		{snippet content}
+			{include #content}
+		{/snippet}
+	</div>
+	
+	<footer>
+		<a href="http://www.webcook.cz" target="_blank">Fakturace, verze: 12.359, &copy; Webcook development 2012</a>
+	</footer>
+
+	{#scripts}
+	<script src="{$basePath}/js/jquery-1.8.2.js"></script>
+	<script src="{$basePath}/js/jquery-ui-1.9.1.custom.min.js"></script>
+	
+	<script src="{$basePath}/js/nette.ajax.js"></script>
+	<script src="{$basePath}/js/grid.js"></script>
+	<script src="{$basePath}/js/extensions/scrollTo.ajax.js"></script>
+	<script src="{$basePath}/js/extensions/spinner.ajax.js"></script>
+	<script src="{$basePath}/js/tiny_mce/tiny_mce.js"></script>
+	<script src="{$basePath}/js/main.js"></script>
+	{/#}
+</body>
+</html>

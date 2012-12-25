@@ -1,0 +1,348 @@
+<?php
+
+namespace App;
+
+use Nette\Application\Responses\FileResponse;
+use Nette\Application\Responses\JsonResponse;
+
+use Nette,
+	Model, Grid\InvoiceGrid;
+
+
+/**
+ * Products presenter.
+ */
+class InvoicesPresenter extends BasePresenter
+{
+	
+	private $invoiceRepository;
+	
+	private $contactRepository;
+	
+	private $settingsRepository;
+	
+	private $serieRepository;
+	
+	private $productRepository;
+	
+	private $invoiceItemsRepository;
+	
+	protected function startup(){
+		parent::startup();
+		$this->invoiceRepository = $this->context->invoiceRepository;
+		$this->contactRepository = $this->context->contactRepository;
+		$this->settingsRepository = $this->context->settingsRepository;
+		$this->serieRepository = $this->context->serieRepository;
+		$this->productRepository = $this->context->productRepository;
+		$this->invoiceItemsRepository = $this->context->invoiceItemsRepository;
+	}
+	
+	public function renderDefault(){
+		
+	}
+	
+	public function renderAddInvoice($idInvoice){
+		
+		$this->template->idInvoice = $idInvoice;
+	}
+	
+	protected function createComponentInvoiceGrid(){
+		return new InvoiceGrid($this->context->invoiceRepository);
+	}
+		
+	/**
+	 * Contact form factory.
+	 * @return Nette\Application\UI\Form
+	 */
+	protected function createComponentInvoiceForm(){
+		$form = new Nette\Application\UI\Form;
+	
+		$form->getElementPrototype()->class = "ajax";
+	
+		$form->addText('name', 'Název:')
+		->setRequired('Prosím zadejte název faktury.');
+		
+		$contacts = $this->contactRepository->findAll();
+		
+		$selectContacts = array();
+		foreach($contacts as $c){
+			$selectContacts[$c->id_contact] = $c->name;
+		}
+		
+		$form->addSelect('odberatel', 'Odběratel', $selectContacts);
+		$form->addSelect('prijemce', 'Příjemce', $selectContacts);
+		
+		$series = $this->serieRepository->findAll();
+		
+		$selectSeries = array();
+		foreach($series as $s){
+			$selectSeries[$s->id_serie] = $s->name;
+		}
+		
+		if(array_key_exists('idInvoice', $_GET)){
+			$form->addText('number', 'Číslo faktury', $selectSeries);
+		}else{
+			$form->addSelect('series', 'Řada faktury', $selectSeries);
+		}
+		
+		
+		$form->addText('datum_vystaveni', 'Datum vystavení:')->setAttribute("class", "date");
+		$form->addText('datum_zdan_plneni', 'Datum zdaň. plnění:')->setAttribute("class", "date");
+		$form->addText('datum_splatnosti', 'Datum splatnosti:')->setAttribute("class", "date");
+		
+		$form->addText('text', 'Fakturujeme Vám:');
+	
+		$form->addText('variable_code', 'Variabilní symbol:');
+		$form->addText('constant_code', 'Konstantní symbol:');
+		$form->addText('payment_type', 'Způsob úhrady:');
+		
+		$form->addSelect('mena', 'Měna:', array("CZK" => "CZK", "EUR" => "EUR"));
+		
+		$form->addText('productsAutoComplete', 'Přidat produkty:');
+		
+		$form->addSubmit('send', 'Uložit fakturu');
+	
+		if(array_key_exists('idInvoice', $_GET)){
+			$invoice = $this->invoiceRepository->findBy(array("id_invoice" => $_GET["idInvoice"]))->fetch();
+	
+			$form->setDefaults($invoice->toArray());
+			$form->addHidden('id_invoice', $invoice->id_invoice);
+		}
+	
+		// call method signInFormSucceeded() on success
+		$form->onSuccess[] = $this->invoiceFormSucceeded;
+		return $form;
+	}
+	
+	public function actionGetProducts(){
+		
+		$products = $this->productRepository->findProductsByName($_GET["term"]);
+		
+		$returnVals = array();
+		foreach($products as $p){
+			$returnVals[] = array(
+						"label" => $p->name . " (" . $p->catalogue_code . ")",
+						"value" => $p->name,
+						"id" => $p->id_product,
+						"price" => $p->price
+					);
+		}
+		
+		$this->presenter->sendResponse(new JsonResponse($returnVals));
+	}
+	
+	public function invoiceFormSucceeded($form){
+		$values = $form->getValues();
+		
+		// zpracovani produktu z autocomplete
+		unset($values["productsAutoComplete"]);
+		
+		if(array_key_exists('idInvoice', $_GET)){
+	
+			$update = $this->invoiceRepository->updateInvoice($values);
+			$idInvoice = $_GET["idInvoice"];
+			if($update){
+				$this->presenter->flashMessage('Faktura byla upravena.', 'ok');
+			}else{
+				$this->presenter->flashMessage('Nepodařilo se upravit fakturu.', 'error');
+			}
+		}else{
+			
+			$serie = $values["series"];
+			unset($values["series"]);
+			
+			$s = $this->serieRepository->findBy(array("id_serie" => $serie))->fetch();
+			
+			// vytvoreni cisla faktury TODO mely by se locknout tabulky
+			$zeroCount = strlen(str_replace($s["prefix"], "", $s["pattern"]));
+			$values["number"] = $s["prefix"] . str_pad($s["serie"], $zeroCount, "0", STR_PAD_LEFT);
+			
+			$this->serieRepository->updateSerie(array("id_serie" => $serie, "serie" => $s["serie"] + 1));
+			
+			if($idInvoice = $this->invoiceRepository->createInvoice($values)){
+	
+				$this->presenter->flashMessage('Faktura byla uložena.', 'ok');
+	
+				if($this->isAjax()){
+					$this->payload->clearForm = true;
+				}else{
+					$this->redirect('Invoices:');
+				}
+			}else{
+				$this->presenter->flashMessage('Nepodařilo se vytvořit fakturu.', 'error');
+			}
+	
+		}
+		
+		// ulozime prirazene produkty
+		$products = $_POST["products"];
+		$names = $_POST["names"];
+		$vats = $_POST["dph"];
+		$prices = $_POST["prices"];
+		$counts = $_POST["counts"];
+		
+		// smazeme vsechny polozky a nasledne vytvorime nove
+		$this->invoiceItemsRepository->deleteItems($idInvoice);
+		
+		for ($i = 0; $i < count($products); $i++) {
+			$product = array(
+						"id_invoice" => $idInvoice,
+						"nazev" => $names[$i],
+						"cena" => $prices[$i],
+						"dph" => $vats[$i],
+						"pocet" => $counts[$i]
+					);
+			
+			$this->invoiceItemsRepository->insert($product);
+		}
+		
+	}
+	
+	public function actionGetProductsByIdInvoice($id){
+		
+		$products = $this->invoiceItemsRepository->getInvoiceItems($id);
+	
+		$returnVals = array();
+		foreach($products as $p){
+			$returnVals[] = array(
+					"label" => $p->nazev,
+					"value" => $p->nazev,
+					"id" => $p->id_product,
+					"price" => $p->cena,
+					"dph" => $p->dph,
+					"count" => $p->pocet
+			);
+		}
+	
+		$this->presenter->sendResponse(new JsonResponse($returnVals));
+	}
+	
+	
+	protected function createComponentEmailForm(){
+		$form = new Nette\Application\UI\Form;
+		
+		$form->getElementPrototype()->class = "ajax";
+	
+		$form->addText('subject', 'Předmět:')
+		->setRequired('Prosím vyplňte předmět odeslaného emailu.');
+		
+		$form->addText('to', 'Komu odeslat:')
+			->addRule($form::EMAIL, 'Zadejte validní email.');
+		
+		$form->addTextArea('message', 'Text zprávy:');
+	
+		$form->addSubmit('send', 'Odeslat zprávu');
+	
+		// call method signInFormSucceeded() on success
+		$form->onSuccess[] = $this->emailFormSucceeded;
+		return $form;
+	}
+	
+	public function emailFormSucceeded($form){
+		$values = $form->getValues();
+	
+		if(array_key_exists('idInvoice', $_GET)){
+			
+			$pdf = $this->getPdfInvoice($_GET["idInvoice"]);
+			
+			// odeslani emailu s PDF fakturou
+			$savedFile = $pdf->save(WWW_DIR . "/attachments/");
+			
+			try {
+				
+				$mail = new Nette\Mail\Message;
+				$mail->setFrom("info@holzbecher.net", 'Fakturace Holzbecher');
+				$mail->addReplyTo("info@holzbecher.net", 'Fakturace Holzbecher, spol. s r. o. ​barevna a bělidlo Zlíč');
+				$mail->addTo($values["to"]);
+				$mail->setSubject($values["subject"]);
+				$mail->setHtmlBody($values["message"]);
+				$mail->addAttachment($savedFile);
+				$mail->send();
+				
+				$this->presenter->flashMessage('Email byl odeslán.', 'ok');
+			} catch (Exception $e) {
+				$this->presenter->flashMessage('Nepodařilo se odeslat email.', 'error');
+			}
+		}
+		
+		if(!$this->presenter->isAjax())
+			$this->redirect("Invoices:");
+	}
+	
+	public function renderEmailInvoice($idInvoice){
+		
+		$this->template->idInvoice = $idInvoice;
+	}
+	
+	public function actionPrintInvoice($idInvoice){
+		
+		$pdf = $this->getPdfInvoice($idInvoice);
+		$pdf->output();
+	}
+	
+	private function getPdfInvoice($idInvoice){
+		
+		$template = $this->createTemplate()->setFile(APP_DIR . "/templates/Invoices/invoice.latte");
+		
+		$data = $this->invoiceRepository->getInvoice($idInvoice);
+		
+		$settings = $this->settingsRepository->findAll()->fetchPairs("name", "value");
+		$odberatel = $this->contactRepository->findBy(array("id_contact" => $data['odberatel']))->fetch();
+		$prijemce = $this->contactRepository->findBy(array("id_contact" => $data['prijemce']))->fetch();
+		
+		$products = $this->invoiceItemsRepository->getInvoiceItems($idInvoice);
+		
+		$total = 0;
+		$totalVat = 0;
+		$arrayProducts = array();
+		$vat = 0;
+		foreach($products as $p){
+			$tmp["cena"] = $p->cena;
+			$tmp["dph"] = $p->dph;
+			$tmp["nazev"] = $p->nazev;
+			$tmp["pocet"] = $p->pocet;
+			
+			$tmp["cena_s_dph"] = $tmp["cena"] * ($tmp["dph"] / 100 + 1);
+			$tmp["cena_celkem"] = $tmp["cena"] * $tmp["pocet"];
+			$tmp["cena_celkem_s_dph"] = $tmp["cena_s_dph"] * $tmp["pocet"];
+			
+			$total += $tmp["cena"] * $tmp["pocet"];
+			$totalVat += $tmp["cena_s_dph"] * $tmp["pocet"];
+			
+			$arrayProducts[] = $tmp;
+		}
+		
+		if($data["mena"] == "EUR") $data["mena"] = "&euro;";
+		else $data["mena"] = " Kč";
+		
+		$template->vat = $totalVat - $total;
+		$template->total = $total;
+		$template->totalVat = $totalVat;
+		$template->products = $arrayProducts;
+		$template->settings = $settings;
+		$template->data = $data;
+		$template->odberatel = $odberatel;
+		$template->prijemce = $prijemce;
+		
+		$pdf = new \PdfResponse($template, $this->context);
+		$pdf->documentTitle = "Faktura č. " . $data['number'];
+		
+		// optional
+		//$pdf->documentTitle = date("Y-m-d") . " My super title"; // creates filename 2012-06-30-my-super-title.pdf
+		$pdf->pageFormat = "A4"; // wide format
+		//$pdf->getMPDF()->setFooter("|© www.mysite.com|"); // footer
+		
+		return $pdf;
+	}
+	
+	public function handleDelete($idInvoice){
+	
+		if($this->invoiceRepository->deleteInvoice($idInvoice)){
+			$this->presenter->flashMessage("Faktura byla smazána.", "ok");
+		}else{
+			$this->presenter->flashMessage("Nepodařilo se smazat fakturu.", "error");
+		}
+	
+	
+	}
+}

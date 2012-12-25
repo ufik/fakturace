@@ -1,0 +1,40 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+parameters:
+
+php:
+	date.timezone: Europe/Prague
+	# zlib.output_compression: yes
+
+nette:
+	application:
+		errorPresenter: Error
+		mapping:
+			*: App\*Module\*Presenter
+
+	session:
+		expiration: 14 days
+	
+	database:
+		dsn: 'mysql:host=localhost;dbname=fakturace'
+		user: root
+		password: 
+
+
+services:
+	authenticator: Model\Authenticator
+	routerFactory: App\RouterFactory
+	router: @routerFactory::createRouter
+	contactRepository: Todo\ContactRepository
+	productRepository: Todo\ProductRepository
+	serieRepository: Todo\SerieRepository
+	invoiceRepository: Todo\InvoiceRepository
+	settingsRepository: Todo\SettingsRepository
+	invoiceItemsRepository: Todo\InvoiceItemsRepository
+
+
+factories:

@@ -1,0 +1,26 @@
+{#content}
+
+<h1>Odeslat email s fakturou</h1>
+
+{control emailForm}
+
+Příloha: <a href="{link Invoices:printInvoice idInvoice=>$idInvoice}" class="new-page">PDF faktura</a>
+
+<script>
+$(function(){
+	
+	tinyMCE.init({
+	    mode : "textareas"
+	});
+	
+});
+</script>
+
+{/#}
+
+{#actionMenu}
+
+<li><a href="{link Invoices:}" class="ajax">Zpět na výpis faktur</a></li>
+
+{/#}
+
