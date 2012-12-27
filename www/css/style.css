@@ -226,6 +226,10 @@ tbody tr td{
 	-webkit-transition: background-color 1s, color 1s;
 }
 
+tbody tr th{
+	vertical-align: top;
+}
+
 table.grid tbody tr:hover td{
 	background-color: #000;
 	color: white;

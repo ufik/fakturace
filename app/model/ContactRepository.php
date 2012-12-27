@@ -19,4 +19,8 @@ class ContactRepository extends Repository{
 		return $this->getTable()->where('id_contact = ?', $data["id_contact"])->update($data);
 	}
 	
+	public function exists($name){
+		return $this->getTable()->where('name = ?', $name);
+	}
+	
 }

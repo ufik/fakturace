@@ -222,7 +222,11 @@ class InvoicesPresenter extends BasePresenter
 		$form = new Nette\Application\UI\Form;
 		
 		$form->getElementPrototype()->class = "ajax";
-	
+		
+		$settings = $this->settingsRepository->findAll()->fetchPairs("name", "value");
+		$data = $this->invoiceRepository->getInvoice($_GET["idInvoice"]);
+		$odberatel = $this->contactRepository->findBy(array("id_contact" => $data['odberatel']))->fetch();
+		
 		$form->addText('subject', 'Předmět:')
 		->setRequired('Prosím vyplňte předmět odeslaného emailu.');
 		
@@ -232,7 +236,9 @@ class InvoicesPresenter extends BasePresenter
 		$form->addTextArea('message', 'Text zprávy:');
 	
 		$form->addSubmit('send', 'Odeslat zprávu');
-	
+		
+		$form->setDefaults(array("to" => $odberatel["email"], "message" => $settings["email_message"]));
+		
 		// call method signInFormSucceeded() on success
 		$form->onSuccess[] = $this->emailFormSucceeded;
 		return $form;
@@ -315,6 +321,16 @@ class InvoicesPresenter extends BasePresenter
 		if($data["mena"] == "EUR") $data["mena"] = "&euro;";
 		else $data["mena"] = " Kč";
 		
+		$round = $totalVat - intval($totalVat);
+		
+		if($round >= 0.5){
+			$totalVatRounded = $totalVat + (1 - $round);
+		}else{
+			$totalVatRounded = $totalVat - $round;
+		}
+		
+		$template->totalVatRounded = $totalVatRounded;
+		$template->round = $round;
 		$template->vat = $totalVat - $total;
 		$template->total = $total;
 		$template->totalVat = $totalVat;

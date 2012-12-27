@@ -26,9 +26,14 @@ class InvoiceGrid extends Grid{
         
         $this->setPerPageValues(array(10, 20, 50, 100));
         
-        $this->addColumn('name', 'Název faktury');
-        $this->addColumn('variable_code', 'Variabilní číslo', '100px');
-        $this->addColumn('price', 'Cena', '100px');
+        $this->addColumn('name', 'Název faktury')
+        	->setTextFilter();
+        
+        $this->addColumn('variable_code', 'Variabilní číslo', '100px')
+        	->setNumericFilter();
+        
+        $this->addColumn('price', 'Cena', '100px')
+        	->setNumericFilter();
         
         $self = $presenter;
         

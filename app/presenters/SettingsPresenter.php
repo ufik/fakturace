@@ -41,6 +41,9 @@ class SettingsPresenter extends BasePresenter
 		$form->addText('invoice_dic', 'DIČ:');
 		$form->addText('invoice_registration', 'Registrace:');
 		
+		$form->addGroup("Emailové nastavení");
+		$form->addTextArea('email_message', 'Text emailu:');
+		
 		$form->addGroup("Bankovní spojení");
 		$form->addText('bank_account_number', 'Číslo účtu:');
 		$form->addText('bank_swift', 'SWIFT:');

@@ -5,6 +5,8 @@
  * @copyright Copyright (c) 2009, 2010 David Grudl
  * @copyright Copyright (c) 2012 Vojtěch Dobeš
  * @license MIT
+ *
+ * @version 1.2.1
  */
 
 (function($, undefined) {
@@ -279,7 +281,7 @@ $.nette.ext('validation', {
 		}
 
 		if (validate.form && analyze.form && !((analyze.isSubmit || analyze.isImage) && analyze.el.attr('formnovalidate') !== undefined)) {
-			if (analyze.form.get(0).onsubmit && !analyze.form.get(0).onsubmit()) {
+			if (analyze.form.get(0).onsubmit && analyze.form.get(0).onsubmit() === false) {
 				e.stopImmediatePropagation();
 				e.preventDefault();
 				return false;
@@ -300,26 +302,6 @@ $.nette.ext('validation', {
 }, {
 	explicitNoAjax: false
 });
-
-// current page state (persistent parameters)
-$.nette.ext('state', {
-	prepare: function (settings) {
-		if (this.state) {
-			if (typeof settings.data == 'string') {
-				settings.data += '&' + $.param(this.state);
-			} else if (typeof settings.data == 'object') {
-				settings.data = $.extend(settings.data || {}, this.state);
-			} else if (!settings.data) {
-				settings.data = this.state;
-			}
-		}
-	},
-	success: function (payload) {
-		if (payload.state) {
-			this.state = payload.state;
-		}
-	}
-}, {state: null});
 
 $.nette.ext('forms', {
 	init: function () {
@@ -398,7 +380,7 @@ $.nette.ext('snippets', {
 			$el = this.getElement($el);
 		}
 		// Fix for setting document title in IE
-		if ($el.get(0).tagName == 'TITLE') {
+		if ($el.is('title')) {
 			document.title = html;
 		} else {
 			this.applySnippet($el, html, back);
@@ -420,23 +402,6 @@ $.nette.ext('snippets', {
 	}
 });
 
-function clearForm(ele) {
-	    $(ele).find(':input').each(function() {
-	        switch(this.type) {
-	            case 'password':
-	            case 'select-multiple':
-	            case 'select-one':8
-	            case 'text':
-	            case 'textarea':
-	                $(this).val('');
-	                break;
-	            case 'checkbox':
-	            case 'radio':
-	                this.checked = false;
-	        }
-	    });
-}
-
 // support $this->redirect()
 $.nette.ext('redirect', {
 	success: function (payload) {
@@ -444,11 +409,17 @@ $.nette.ext('redirect', {
 			window.location.href = payload.redirect;
 			return false;
 		}
-		
-		if(payload.clearForm)
-			clearForm("form.ajax");
 	}
 });
+
+// current page state
+$.nette.ext('state', {
+	success: function (payload) {
+		if (payload.state) {
+			this.state = payload.state;
+		}
+	}
+}, {state: null});
 
 // abort last request if new started
 $.nette.ext('unique', {
@@ -482,24 +453,23 @@ $.nette.ext('abort', {
 	}
 }, {xhr: null});
 
+$.nette.ext('load', {
+	success: function () {
+		$.nette.load();
+	}
+});
+
 // default ajaxification (can be overridden in init())
 $.nette.ext('init', {
 	load: function (rh) {
-		$(this.linkSelector).off('click.nette', rh).live('click.nette', rh);
-		var $forms = $(this.formSelector);
-		$forms.off('submit.nette', rh).live('submit.nette', rh);
-		$forms.off('click.nette', ':image', rh).on('click.nette', ':image', rh);
-		$forms.off('click.nette', ':submit', rh).on('click.nette', ':submit', rh);
-		
-		var buttonSelector = this.buttonSelector;
-		$(buttonSelector).each(function () {
-			$(this).closest('form')
-				.off('click.nette', buttonSelector, rh)
-				.on('click.nette', buttonSelector, rh);
+		$(this.linkSelector).off('click.nette', rh).on('click.nette', rh);
+		$(this.formSelector).off('submit.nette', rh).on('submit.nette', rh)
+			.off('click.nette', ':image', rh).on('click.nette', ':image', rh)
+			.off('click.nette', ':submit', rh).on('click.nette', ':submit', rh);
+		$(this.buttonSelector).each(function () {
+			$(this).closest('form').off('click.nette', this.buttonSelector, rh)
+				.on('click.nette', this.buttonSelector, rh);
 		});
-	},
-	success: function () {
-		$.nette.load();
 	}
 }, {
 	linkSelector: 'a.ajax',

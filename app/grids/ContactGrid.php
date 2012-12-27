@@ -25,12 +25,12 @@ class ContactGrid extends Grid{
         $this->setDefaultOrder("contact.id_contact DESC");
         
         $this->setPerPageValues(array(10, 20, 50, 100));
-        
-        $this->addColumn('name', 'Jméno společnosti');
+      
+        $this->addColumn('name', 'Jméno společnosti')->setTextFilter();
         $this->addColumn('ico', 'IČO', '100px');
         $this->addColumn('dic', 'DIČ', '100px');
-        $this->addColumn('ulice', 'Ulice', '100px');
-        $this->addColumn('mesto', 'Město', '100px');
+        $this->addColumn('ulice', 'Ulice', '100px')->setTextFilter();
+        $this->addColumn('mesto', 'Město', '100px')->setTextFilter();
         
         $self = $presenter;
         

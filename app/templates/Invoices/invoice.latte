@@ -8,13 +8,17 @@
 		vertical-align: top;
 	}
 	
+	.right{
+		text-align: right;
+	}
+	
 	table, th, td {
-		border: 1px solid black;
+		border: 1px solid #F2F2F2;
 		border-collapse: collapse;
 	}
 	
 	.even {
-		background-color: grey;
+		background-color: #F2F2F2;
 	}
 	</style>
 	
@@ -92,10 +96,10 @@
 							<td>{$p["nazev"]}</td>
 							<td>{$p["pocet"]}</td>
 							<td>{$p["dph"]}%</td>
-							<td>{$p["cena"]|number:2:',':' '}{!$data["mena"]}</td>
-							<td>{$p["cena_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
-							<td>{$p["cena_celkem"]|number:2:',':' '}{!$data["mena"]}</td>
-							<td>{$p["cena_celkem_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td class="right">{$p["cena"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td class="right">{$p["cena_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td class="right">{$p["cena_celkem"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td class="right">{$p["cena_celkem_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
 						</tr>
 						{/foreach}
 					</tbody>
@@ -106,27 +110,41 @@
 				<td>
 					Razítko a podpis:
 				</td>
-				<td>
+				<td style="width: 400px;">
 					<table>
 						<tbody>
 							<tr>
-								<th>Celkem:</th>
-								<td>
+								<th class="right">Celkem:</th>
+								<td class="right">
 									{$total|number:2:',':' '}{!$data["mena"]}
-								</td>
+								</td class="right">
 							</tr>
 							<tr>
-								<th>Součet DPH:</th>
-								<td>
+								<th class="right">Součet DPH:</th>
+								<td class="right">
 									{$vat|number:2:',':' '}{!$data["mena"]}
 								</td>
 							</tr>
 							<tr>
-								<th>Celkem s DPH:</th>
-								<td>
+								<th class="right">Celkem s DPH:</th>
+								<td class="right">
 									{$totalVat|number:2:',':' '}{!$data["mena"]}
 								</td>
 							</tr>
+							{if $round > 0}
+							<tr>
+								<th class="right">Zaokrouhlení:</th>
+								<td class="right">
+									{$round|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+							<tr>
+								<th class="right">Celkem částka k úhradě</th>
+								<td class="right">
+									{$totalVatRounded|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+							{/if}
 						</tbody>
 					</table>
 				</td>

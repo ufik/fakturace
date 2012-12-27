@@ -26,9 +26,9 @@ class ProductGrid extends Grid{
         
         $this->setPerPageValues(array(10, 20, 50, 100));
         
-        $this->addColumn('name', 'Název produktu');
-        $this->addColumn('catalogue_code', 'Katalogové číslo', '100px');
-        $this->addColumn('price', 'Cena', '100px');
+        $this->addColumn('name', 'Název produktu')->setTextFilter();
+        $this->addColumn('catalogue_code', 'Katalogové číslo', '100px')->setTextFilter();
+        $this->addColumn('price', 'Cena', '100px')->setNumericFilter();
         
         $self = $presenter;
         
