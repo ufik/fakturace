@@ -20,6 +20,14 @@
 	<link rel="stylesheet" media="all" href="{$basePath}/css/flick/jquery-ui-1.9.1.custom.css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 	{#head}{/#}
+	
+	{#scripts}
+	<script src="{$basePath}/js/jquery-1.8.2.js"></script>
+	<script src="{$basePath}/js/jquery-ui-1.9.1.custom.min.js"></script>
+	<script src="{$basePath}/js/grid.js"></script>
+	<script src="{$basePath}/js/tiny_mce/tiny_mce.js"></script>
+	<script src="{$basePath}/js/main.js"></script>
+	{/#}
 </head>
 
 <body>
@@ -61,6 +69,9 @@
 			</li>
 			<li>
 				<a href="{link Invoices:}" class="ajax"><span></span>Faktury</a>
+			</li>
+			<li>
+				<a href="{link Store:}" class="ajax"><span></span>Sklady</a>
 			</li>
 		</ul>
 		
@@ -104,15 +115,5 @@
 		<a href="http://www.webcook.cz" target="_blank">Fakturace, verze: 12.359, &copy; Webcook development 2012</a>
 	</footer>
 
-	{#scripts}
-	<script src="{$basePath}/js/jquery-1.8.2.js"></script>
-	<script src="{$basePath}/js/jquery-ui-1.9.1.custom.min.js"></script>
-	<script src="{$basePath}/js/nette.ajax.js"></script>
-	<script src="{$basePath}/js/grid.js"></script>
-	<script src="{$basePath}/js/extensions/scrollTo.ajax.js"></script>
-	<script src="{$basePath}/js/extensions/spinner.ajax.js"></script>
-	<script src="{$basePath}/js/tiny_mce/tiny_mce.js"></script>
-	<script src="{$basePath}/js/main.js"></script>
-	{/#}
 </body>
 </html>

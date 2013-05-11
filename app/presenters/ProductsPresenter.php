@@ -42,11 +42,15 @@ class ProductsPresenter extends BasePresenter
 		->setRequired('Prosím zadejte název produktu.');
 	
 		$form->addText('price', 'Cena:');
+		
+		$form->addText('mj', 'Měrná jednotka:');
 	
 		$form->addText('catalogue_code', 'Katalogové číslo:');
 	
 		$form->addSubmit('send', 'Uložit produkt');
-	
+		
+		$form->setDefaults(array("mj" => "ks"));
+		
 		if(array_key_exists('idProduct', $_GET)){
 			$product = $this->productRepository->findBy(array("id_product" => $_GET["idProduct"]))->fetch();
 	

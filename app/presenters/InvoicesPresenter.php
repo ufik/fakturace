@@ -5,7 +5,7 @@ namespace App;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\Responses\JsonResponse;
 
-use Nette,
+use Nette, Todo,
 	Model, Grid\InvoiceGrid;
 
 
@@ -43,6 +43,19 @@ class InvoicesPresenter extends BasePresenter
 	
 	public function renderAddInvoice($idInvoice){
 		
+		$invoice = $this->invoiceRepository->getInvoice($idInvoice);
+		
+		// TODO refractoring ty dobytku
+		if(!empty($idInvoice)){			
+			$this->template->odberatel = $this->contactRepository->findBy(array("id_contact" => $invoice->odberatel))->fetch();
+			$this->template->prijemce = $this->contactRepository->findBy(array("id_contact" => $invoice->prijemce))->fetch();
+		}else{
+			$this->template->odberatel = false;
+			$this->template->prijemce = false;
+		}
+		
+		
+		$this->template->invoice = $invoice;
 		$this->template->idInvoice = $idInvoice;
 	}
 	
@@ -62,15 +75,8 @@ class InvoicesPresenter extends BasePresenter
 		$form->addText('name', 'Název:')
 		->setRequired('Prosím zadejte název faktury.');
 		
-		$contacts = $this->contactRepository->findAll();
-		
-		$selectContacts = array();
-		foreach($contacts as $c){
-			$selectContacts[$c->id_contact] = $c->name;
-		}
-		
-		$form->addSelect('odberatel', 'Odběratel', $selectContacts);
-		$form->addSelect('prijemce', 'Příjemce', $selectContacts);
+		$form->addText('odberatel', "Odběratel");
+		$form->addText('prijemce', 'Příjemce');
 		
 		$series = $this->serieRepository->findAll();
 		
@@ -85,14 +91,13 @@ class InvoicesPresenter extends BasePresenter
 			$form->addSelect('series', 'Řada faktury', $selectSeries);
 		}
 		
-		
 		$form->addText('datum_vystaveni', 'Datum vystavení:')->setAttribute("class", "date");
 		$form->addText('datum_zdan_plneni', 'Datum zdaň. plnění:')->setAttribute("class", "date");
 		$form->addText('datum_splatnosti', 'Datum splatnosti:')->setAttribute("class", "date");
 		
 		$form->addText('text', 'Fakturujeme Vám:');
-	
-		$form->addText('variable_code', 'Variabilní symbol:');
+		
+		//$form->addText('variable_code', 'Variabilní symbol:');
 		$form->addText('constant_code', 'Konstantní symbol:');
 		$form->addText('payment_type', 'Způsob úhrady:');
 		
@@ -124,10 +129,26 @@ class InvoicesPresenter extends BasePresenter
 						"label" => $p->name . " (" . $p->catalogue_code . ")",
 						"value" => $p->name,
 						"id" => $p->id_product,
-						"price" => $p->price
+						"price" => $p->price,
+						"mj" => $p->mj
 					);
 		}
 		
+		$this->presenter->sendResponse(new JsonResponse($returnVals));
+	}
+	
+	public function actionGetContacts(){
+	
+		$contacts = $this->contactRepository->findByName($_GET["term"]);
+	
+		$returnVals = array();
+		foreach($contacts as $c){
+			$returnVals[] = array(
+					"label" => $c->name,
+					"id" => $c->id_contact
+			);
+		}
+	
 		$this->presenter->sendResponse(new JsonResponse($returnVals));
 	}
 	
@@ -136,16 +157,17 @@ class InvoicesPresenter extends BasePresenter
 		
 		// zpracovani produktu z autocomplete
 		unset($values["productsAutoComplete"]);
-		
+
+		$values["odberatel"] = $_POST["odberatelid"];
+		$values["prijemce"] = $_POST["prijemceid"];
+
 		if(array_key_exists('idInvoice', $_GET)){
 	
 			$update = $this->invoiceRepository->updateInvoice($values);
 			$idInvoice = $_GET["idInvoice"];
-			if($update){
-				$this->presenter->flashMessage('Faktura byla upravena.', 'ok');
-			}else{
-				$this->presenter->flashMessage('Nepodařilo se upravit fakturu.', 'error');
-			}
+			
+			$this->presenter->flashMessage('Faktura byla upravena.', 'ok');
+
 		}else{
 			
 			$serie = $values["series"];
@@ -163,39 +185,40 @@ class InvoicesPresenter extends BasePresenter
 	
 				$this->presenter->flashMessage('Faktura byla uložena.', 'ok');
 	
-				if($this->isAjax()){
-					$this->payload->clearForm = true;
-				}else{
-					$this->redirect('Invoices:');
-				}
 			}else{
 				$this->presenter->flashMessage('Nepodařilo se vytvořit fakturu.', 'error');
 			}
 	
 		}
-		
+
 		// ulozime prirazene produkty
-		$products = $_POST["products"];
-		$names = $_POST["names"];
-		$vats = $_POST["dph"];
-		$prices = $_POST["prices"];
-		$counts = $_POST["counts"];
+		if(array_key_exists('products', $_POST)){
+			$products = $_POST["products"];
+			$names = $_POST["names"];
+			$vats = $_POST["dph"];
+			$prices = $_POST["prices"];
+			$counts = $_POST["counts"];
+			$mj = $_POST["mj"];
 		
-		// smazeme vsechny polozky a nasledne vytvorime nove
-		$this->invoiceItemsRepository->deleteItems($idInvoice);
-		
-		for ($i = 0; $i < count($products); $i++) {
-			$product = array(
-						"id_invoice" => $idInvoice,
-						"nazev" => $names[$i],
-						"cena" => $prices[$i],
-						"dph" => $vats[$i],
-						"pocet" => $counts[$i]
-					);
+			// smazeme vsechny polozky a nasledne vytvorime nove
+			$this->invoiceItemsRepository->deleteItems($idInvoice);
 			
-			$this->invoiceItemsRepository->insert($product);
+			for ($i = 0; $i < count($products); $i++) {
+				$product = array(
+							"id_invoice" => $idInvoice,
+							"nazev" => $names[$i],
+							"cena" => $prices[$i],
+							"dph" => $vats[$i],
+							"pocet" => $counts[$i],
+							"mj" => $mj[$i]
+						);
+				
+				$this->invoiceItemsRepository->insert($product);
+			}
+		
 		}
 		
+		$this->redirect("Invoices:");
 	}
 	
 	public function actionGetProductsByIdInvoice($id){
@@ -210,7 +233,8 @@ class InvoicesPresenter extends BasePresenter
 					"id" => $p->id_product,
 					"price" => $p->cena,
 					"dph" => $p->dph,
-					"count" => $p->pocet
+					"count" => $p->pocet,
+					"mj" => $p->mj
 			);
 		}
 	
@@ -288,9 +312,13 @@ class InvoicesPresenter extends BasePresenter
 	
 	private function getPdfInvoice($idInvoice){
 		
+		$data = $this->invoiceRepository->getInvoice($idInvoice);
+		
 		$template = $this->createTemplate()->setFile(APP_DIR . "/templates/Invoices/invoice.latte");
 		
-		$data = $this->invoiceRepository->getInvoice($idInvoice);
+		$translator = new Todo\Translator(($data["mena"] != "CZK" ? 'en' : 'cs'));
+		
+		$template->translator = $translator->getTranslations(); 
 		
 		$settings = $this->settingsRepository->findAll()->fetchPairs("name", "value");
 		$odberatel = $this->contactRepository->findBy(array("id_contact" => $data['odberatel']))->fetch();
@@ -298,19 +326,36 @@ class InvoicesPresenter extends BasePresenter
 		
 		$products = $this->invoiceItemsRepository->getInvoiceItems($idInvoice);
 		
+		// pokud je mena euro, nepocitame s DPH
+		$noDph = false;
+		if($data['mena'] == "EUR"){
+			$noDph = true;
+		}
+		
 		$total = 0;
 		$totalVat = 0;
 		$arrayProducts = array();
-		$vat = 0;
+		$vatBasic = 0;
+		$vatLower = 0;
 		foreach($products as $p){
+			
 			$tmp["cena"] = $p->cena;
 			$tmp["dph"] = $p->dph;
 			$tmp["nazev"] = $p->nazev;
 			$tmp["pocet"] = $p->pocet;
+			$tmp["mj"] = $p->mj;
+			
+			if($noDph) $tmp["dph"] = 0;
 			
 			$tmp["cena_s_dph"] = $tmp["cena"] * ($tmp["dph"] / 100 + 1);
 			$tmp["cena_celkem"] = $tmp["cena"] * $tmp["pocet"];
 			$tmp["cena_celkem_s_dph"] = $tmp["cena_s_dph"] * $tmp["pocet"];
+			
+			if($tmp["dph"] == "21"){
+				$vatBasic += $tmp["cena_celkem_s_dph"] - $tmp["cena_celkem"];
+			}else{
+				$vatLower += $tmp["cena_celkem_s_dph"] - $tmp["cena_celkem"];
+			}
 			
 			$total += $tmp["cena"] * $tmp["pocet"];
 			$totalVat += $tmp["cena_s_dph"] * $tmp["pocet"];
@@ -318,20 +363,55 @@ class InvoicesPresenter extends BasePresenter
 			$arrayProducts[] = $tmp;
 		}
 		
-		if($data["mena"] == "EUR") $data["mena"] = "&euro;";
+		$data['international'] = false;
+		
+		if($data["mena"] == "EUR"){
+			$data["mena"] = "&euro;";
+			$data['international'] = true;
+		}
 		else $data["mena"] = " Kč";
 		
-		$round = $totalVat - intval($totalVat);
+		if(!$data['international']){
 		
-		if($round >= 0.5){
-			$totalVatRounded = $totalVat + (1 - $round);
+			$round = $totalVat - intval($totalVat);
+			
+			// zaokrouhleni pro koruny
+			if($round >= 0.5 || $totalVat < 0){
+				if($totalVat < 0){
+					$totalVatRounded = $totalVat - (1 - abs($round));
+					$sign = "-";
+				}
+				else{
+					$totalVatRounded = $totalVat + (1 - abs($round));
+					$sign = "+";
+				}
+				$round = (1 - abs($round));
+				
+			}else{
+				$totalVatRounded = $totalVat - $round;
+				$sign = "-";
+			}
+		// zaokrouhleni pro eura
 		}else{
-			$totalVatRounded = $totalVat - $round;
+			
+			$round = round(round($totalVat, 1) - $totalVat, 2);
+
+			if($round > 0){
+				$totalVatRounded = $totalVat + $round;
+				$sign = "+";
+			}else{
+				$totalVatRounded = $totalVat - $round;
+				$sign = "";
+			}
 		}
 		
+		$template->noDph = $noDph;
+		$template->sign = $sign;
 		$template->totalVatRounded = $totalVatRounded;
 		$template->round = $round;
 		$template->vat = $totalVat - $total;
+		$template->vatBasic = $vatBasic;
+		$template->vatLower = $vatLower;
 		$template->total = $total;
 		$template->totalVat = $totalVat;
 		$template->products = $arrayProducts;

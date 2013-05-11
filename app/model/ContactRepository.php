@@ -23,4 +23,8 @@ class ContactRepository extends Repository{
 		return $this->getTable()->where('name = ?', $name);
 	}
 	
+	public function findByName($term){
+		return $this->getTable()->where("name LIKE ?", "%$term%");
+	}
+	
 }

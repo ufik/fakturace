@@ -5,8 +5,7 @@ namespace App;
 use Nette\Security\Permission;
 use Nette\Security\User;
 
-use Nette,
-	Model;
+use Nette,	Model;
 
 
 /**
@@ -36,9 +35,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		$acl->addResource('products');
 		$acl->addResource('series');
 		$acl->addResource('settings');
+		$acl->addResource('store');
 		
 		// propojeni roli a zdroju
-		$acl->allow('skladnik', array('products'), 'default');
+		$acl->allow('skladnik', array('store', 'homepage'), Permission::ALL);
 		
 		// administrátor může prohlížet a editovat cokoliv
 		$acl->allow('administrator', Permission::ALL, Permission::ALL);
@@ -58,7 +58,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 			$this->presenter->flashMessage("Nemáte oprávnění pro tuto operaci!", 'error');
 			$this->redirect("Homepage:");
 		}
-			
+
 	}
 	
 	public function beforeRender(){

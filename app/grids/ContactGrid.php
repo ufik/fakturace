@@ -27,8 +27,8 @@ class ContactGrid extends Grid{
         $this->setPerPageValues(array(10, 20, 50, 100));
       
         $this->addColumn('name', 'Jméno společnosti')->setTextFilter();
-        $this->addColumn('ico', 'IČO', '100px');
-        $this->addColumn('dic', 'DIČ', '100px');
+        $this->addColumn('ico', 'IČO', '100px')->setTextFilter();
+        $this->addColumn('dic', 'DIČ', '100px')->setTextFilter();
         $this->addColumn('ulice', 'Ulice', '100px')->setTextFilter();
         $this->addColumn('mesto', 'Město', '100px')->setTextFilter();
         

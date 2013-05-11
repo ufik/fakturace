@@ -46,9 +46,12 @@ class SettingsPresenter extends BasePresenter
 		
 		$form->addGroup("Bankovní spojení");
 		$form->addText('bank_account_number', 'Číslo účtu:');
+		$form->addText('bank_account_number_int', 'Číslo účtu zahraničí:');
 		$form->addText('bank_swift', 'SWIFT:');
 		$form->addText('bank_iban', 'IBAN:');
 		$form->addText('bank_name', 'Banka:');
+		$form->addText('bank_name_int', 'Banka zahraničí:');
+		$form->addText('bank_iban_int', 'IBAN zahraničí:');
 		
 		//$form->addGroup("Systemové nastavení");
 		

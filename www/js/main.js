@@ -4,8 +4,34 @@ function setContentSize(){
 
 $(function(){
 	
-	$.nette.init(function (ajaxHandler) {
-	    $('form.ajax').live('click', ajaxHandler);
+	jQuery.ajaxSetup({
+	    cache: false,
+	    dataType: 'json',
+	    success: function (payload) {
+	        
+	    	if (payload.redirect) {
+                window.location.href = payload.redirect;
+                return;
+            }
+	    	
+	    	if (payload.snippets) {
+	            for (var i in payload.snippets) {
+	                $('#' + i).html(payload.snippets[i]);
+	            }
+	        }
+	    }
+	});
+
+	// odesílání odkazů
+	$('a.ajax').live('click', function (event) {
+	    event.preventDefault();
+	    $.get(this.href);
+	});
+
+	// odesílání formulářů
+	$('form.ajax').live('submit', function (event) {
+	    event.preventDefault();
+	    $.post(this.action, $(this).serialize());
 	});
 	
 	setContentSize();

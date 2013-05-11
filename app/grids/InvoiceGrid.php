@@ -18,7 +18,7 @@ class InvoiceGrid extends Grid{
     {
         //Vytvoříme si zdroj dat pro Grid
         //Při výběru dat vždy vybereme id
-        $source = new \NiftyGrid\NDataSource($this->invoice->select('id_invoice, name, variable_code, price'));
+        $source = new \NiftyGrid\NDataSource($this->invoice->select('id_invoice, name, number'));
         //Předáme zdroj
         $this->setDataSource($source);
         
@@ -29,10 +29,7 @@ class InvoiceGrid extends Grid{
         $this->addColumn('name', 'Název faktury')
         	->setTextFilter();
         
-        $this->addColumn('variable_code', 'Variabilní číslo', '100px')
-        	->setNumericFilter();
-        
-        $this->addColumn('price', 'Cena', '100px')
+        $this->addColumn('number', 'Variabilní číslo', '100px')
         	->setNumericFilter();
         
         $self = $presenter;

@@ -3,11 +3,44 @@
 <h1>Formulář faktur</h1>
 
 <input type="hidden" id="autocompleteUrl" value="{link Invoices:getProducts}" />
+<input type="hidden" id="autocompleteUrlContact" value="{link Invoices:getContacts}" />
+
 <input type="hidden" id="getProducts" value="{link Invoices:getProductsByIdInvoice id => $idInvoice}" />
 
-{control invoiceForm}
+{form invoiceForm}
+<table>
+	<tbody>
+			<tr><th>{label name /}</th><td>{input name}</td></tr>
+			<tr><th>{label odberatel /}</th><td class="search">{input odberatel} <span id="odberatelJmeno">{if $odberatel} {$odberatel->name}{/if}</span><input type="hidden" name="odberatelid" id="odberatel" value="{if $odberatel}{$invoice->odberatel}{/if}" /></td></tr>
+			<tr><th>{label prijemce /}</th><td class="search">{input prijemce} <span id="prijemceJmeno">{if $prijemce} {$prijemce->name}{/if}</span><input type="hidden" name="prijemceid" id="prijemce" value="{if $prijemce}{$invoice->prijemce}{/if}" /></td></tr>
+			
+			{if !empty($idInvoice)}
+				<tr><th>{label number /}</th><td>{input number}</td></tr>
+			{else}
+				<tr><th>{label series /}</th><td>{input series}</td></tr>
+			{/if}
+			
+			<tr><th>{label datum_vystaveni /}</th><td>{input datum_vystaveni}</td></tr>
+			<tr><th>{label datum_zdan_plneni /}</th><td>{input datum_zdan_plneni}</td></tr>
+			<tr><th>{label datum_splatnosti /}</th><td>{input datum_splatnosti}</td></tr>
+			<tr><th>{label text /}</th><td>{input text}</td></tr>
+			<tr><th>{label constant_code /}</th><td>{input constant_code}</td></tr>
+			<tr><th>{label payment_type /}</th><td>{input payment_type}</td></tr>
+			<tr><th>{label mena /}</th><td>{input mena}</td></tr>
+			<tr><th>{label productsAutoComplete /}</th><td>{input productsAutoComplete}</td></tr>
+			<tr><th>{label send /}</th><td>{input send}</td></tr>
+			
+			{if !empty($idInvoice)}
+				<tr><th>{label id_invoice /}</th><td>{input id_invoice}</td></tr>
+			{/if}
+	</tbody>
+</table>
+{/form}
 
 <script>
+	
+	$("#frm-invoiceForm-odberatel").val("");
+	$("#frm-invoiceForm-prijemce").val("");
 	
 	$.get($("#getProducts").val(), function(data){
 		for(var i=0; i<data.length;i++){
@@ -15,20 +48,55 @@
 		}
 	});
 	
-	$(".date").datepicker();
+	$(".search input").live("focus", function(){
+		$(this).css("width", 160);
+	});
 	
-	$( "#frm-invoiceForm-productsAutoComplete" ).autocomplete({
-		 source: $("#autocompleteUrl").val(),
+	$(".search input").live("blur", function(){
+		$(this).css("width", 30);
+	});
+	
+	$(".date").datepicker({ dateFormat: "yy-mm-dd" });
+	
+	{if empty($idInvoice)}
+		$(".date").datepicker("setDate", "+0");
+		$("#frm-invoiceForm-datum_splatnosti").datepicker("setDate", "+30");
+	{/if}
+	
+	$( "#frm-invoiceForm-odberatel" ).autocomplete({
+		 source: $("#autocompleteUrlContact").val(),
          minLength: 2,
          select: function( event, ui ) {
              event.preventDefault();
-        	 
-        	 $("#frm-invoiceForm-productsAutoComplete").val("");
-             
-             createProductRow(ui.item);
-             
-             $("#frm-invoiceForm-productsAutoComplete").focus();
+			 
+             $("#odberatelJmeno").html(ui.item.label);
+             $("#odberatel").val(ui.item.id);
          }
+	});
+	
+	$( "#frm-invoiceForm-prijemce" ).autocomplete({
+		 source: $("#autocompleteUrlContact").val(),
+        minLength: 2,
+        select: function( event, ui ) {
+            event.preventDefault();
+            
+            $("#prijemceJmeno").html(ui.item.label);
+            $("#prijemce").val(ui.item.id);
+        }
+	});
+	
+	$( "#frm-invoiceForm-productsAutoComplete" ).autocomplete({
+		 source: $("#autocompleteUrl").val(),
+        minLength: 2,
+        select: function( event, ui ) {
+            event.preventDefault();
+       	 
+       	 $("#frm-invoiceForm-productsAutoComplete").val("");
+            
+            createProductRow(ui.item);
+            
+            $("#frm-invoiceForm-productsAutoComplete").focus();
+        }
 	});
 	
 	function createProductRow(item){
@@ -37,13 +105,15 @@
 		
 		var row = "<div><input type='hidden' name='products[]' value='"+item.id+"' />";
 		row += "Název: <input type='text' name='names[]' value='"+item.value+"' />";
-		row += "Dph: <select name='dph[]'><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select>";
+		row += "Dph: <select name='dph[]'><option "+(item.dph == "0" ? "selected" : "")+" value='0'>0%</option><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select>";
 		row += "Cena: <input type='text' name='prices[]' value='"+item.price+"' />";
 		row += "Počet: <input type='text' name='counts[]' value='"+item.count+"' />";
+		row += "Mj: <input type='text' name='mj[]' value='"+item.mj+"' />";
 		row += "<a href='#' onclick='$(this).parent().remove(); return false;'>&times; Smazat položku</div>";
 		
 		$("#frm-invoiceForm-productsAutoComplete").after(row);
 	}
+
 </script>
 
 {/#}

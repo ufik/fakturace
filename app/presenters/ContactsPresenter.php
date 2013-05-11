@@ -127,9 +127,7 @@ class ContactsPresenter extends BasePresenter{
 					$exists = $this->contactRepository->findBy(array("name" => $contact['name']))->fetch();
 					
 					if(empty($exists)){
-						//$this->contactRepository->createContact($contact);
-						$ct = $this->transcodeArray($contact);
-						print_r($ct);
+						$this->contactRepository->createContact($this->transcodeArray($contact));
 						$inserts++;
 					}
 					
@@ -146,6 +144,8 @@ class ContactsPresenter extends BasePresenter{
 	
 	private function parseVCard($vCard){
 		
+		$ids = explode(" ", $vCard->NOTE[0]);
+		
 		$name = $vCard->n;
 		$telephone = $vCard->tel;
 		$company = $vCard->org;
@@ -153,6 +153,8 @@ class ContactsPresenter extends BasePresenter{
 		$email = $vCard->email;
 		$ic = "";
 		$dic = "";
+		if(array_key_exists(1, $ids)) $ic = $ids[1];
+		if(array_key_exists(3, $ids)) $dic = $ids[3];
 		
 		$return = array(
 					"name" => $name[0]['LastName'] . ' ' . $company[0]['Unit1'],
@@ -181,7 +183,8 @@ class ContactsPresenter extends BasePresenter{
 	
 	private function transcode($string){
 		
-		return iconv('ASCII', 'UTF-8//IGNORE', $string);
+		//$string = utf8_encode($string);
+		return iconv('ISO-8859-2', 'UTF-8', $string);
 	}
 	
 	public function handleDelete($idContact){

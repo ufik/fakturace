@@ -1,5 +1,5 @@
 <div class="invoiceWrapper">
-	<h1>Faktura č. {$data['number']}</h1>
+	<h1>{$translator['Faktura č.']} {$data['number']}</h1>
 	
 	<style>
 	table {
@@ -13,133 +13,154 @@
 	}
 	
 	table, th, td {
-		border: 1px solid #F2F2F2;
+		border: 1px solid #000;
 		border-collapse: collapse;
+		padding: 8px;
 	}
+	
+	table.noBorder, table.noBorder th, table.noBorder td {
+		border: none;
+		padding: 1px;
+	}
+	
 	
 	.even {
 		background-color: #F2F2F2;
 	}
+	
 	</style>
 	
 	<table>
 		<tbody>
 			<tr>
-				<th>Dodavatel</th>
-				<th>Odběratel</th>
+				<th>{$translator['Dodavatel']}</th>
+				<th>{$translator['Odběratel']}</th>
 			</tr>
 			<tr>
 				<td style="width: 50%;">
 					<div>{$settings['invoice_company']}</div>
 					<div>{$settings['invoice_street']}</div>
 					<div>{$settings['invoice_psc']} {$settings['invoice_city']}</div>
-					<div>IČ: {$settings['invoice_ic']}</div>
-					<div>DIČ: {$settings['invoice_dic']}</div>
+					<div>{$translator['IČ']}: {$settings['invoice_ic']}</div>
+					<div>{$translator['DIČ']}: {$settings['invoice_dic']}</div>
 					<div>{$settings['invoice_registration']}</div>
 				</td>
 				<td>
 					<div>{$odberatel['name']}</div>
 					<div>{$odberatel['ulice']}</div>
 					<div>{$odberatel['psc']} {$odberatel['mesto']}</div>
-					<div>IČ: {$odberatel['ico']}</div>
-					<div>DIČ: {$odberatel['dic']}</div>
+					<div>{$translator['IČ']}: {$odberatel['ico']}</div>
+					<div>{$translator['DIČ']}: {$odberatel['dic']}</div>
 				</td>
 			</tr>
 			<tr>
-				<th>Příjemce</th>
-				<th>Platební údaje</th>
+				<th>{$translator['Příjemce']}</th>
+				<th>{$translator['Platební údaje']}</th>
 			</tr>
 			<tr>
 				<td style="width: 50%;">
 					<div>{$prijemce['name']}</div>
 					<div>{$prijemce['ulice']}</div>
 					<div>{$prijemce['psc']} {$prijemce['mesto']}</div>
-					<div>IČ: {$prijemce['ico']}</div>
-					<div>DIČ: {$prijemce['dic']}</div>
+					<div>{$translator['IČ']}: {$prijemce['ico']}</div>
+					<div>{$translator['DIČ']}: {$prijemce['dic']}</div>
 				</td>
 				<td>
-					<div>Variabilní symbol: {$data['variable_code']}</div>
-					<div>Konstantní symbol: {$data['constant_code']}</div>
-					<div>Způsob úhrady: {$data['payment_type']}</div>
-					<div>Datum vystavení: {$data['datum_vystaveni']|date:"%d.%m.%y"}</div>
-					<div>Datum zdanitelného plnění: {$data['datum_zdan_plneni']|date:"%d.%m.%y"}</div>
-					<div><strong>Datum splatnosti: {$data['datum_splatnosti']|date:"%d.%m.%y"}</strong></div>
+					<div>{$translator['Variabilní symbol']}: {$data['number']}</div>
+					<div>{$translator['Konstantní symbol']}: {$data['constant_code']}</div>
+					<div>{$translator['Způsob úhrady']}: {$data['payment_type']}</div>
+					<div>{$translator['Datum vystavení']}: {$data['datum_vystaveni']|date:"%d.%m.%y"}</div>
+					<div>{$translator['Datum zdanitelného plnění']}: {$data['datum_zdan_plneni']|date:"%d.%m.%y"}</div>
+					<div><strong>{$translator['Datum splatnosti']}: {$data['datum_splatnosti']|date:"%d.%m.%y"}</strong></div>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<div>Bankovní spojení: {$settings['bank_name']} {$settings['bank_account_number']}, 
-					Swift: {$settings['bank_swift']}, 
-					Iban: {$settings['bank_iban']}</div>
+					<div><strong>{$translator['Bankovní spojení']}: {if $data['international']}{$settings['bank_name_int']} {$settings['bank_account_number_int']}{else}{$settings['bank_name']} {$settings['bank_account_number']}{/if}, 
+					<br />{$translator['Swift']}: {$settings['bank_swift']}, 
+					{$translator['Iban']}: {if $data['international']}{$settings['bank_iban_int']}{else}{$settings['bank_iban']}{/if}</strong></div>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
 				
-				<div><strong>Fakturujeme Vám</strong></div>
+				<div><strong>{$translator['Fakturujeme Vám']}</strong></div>
 				<div>{$data['text']}</div>
 				<br />
 				
 				<table class="invoice-items">
 					<tbody>
 						<tr>
-							<th>Název</th>
-							<th>Počet</th>
-							<th>DPH</th>
-							<th>Cena bez DPH</th>
-							<th>Cena s DPH</th>
-							<th>Cena celkem bez DPH</th>
-							<th>Cena celkem s DPH</th>
+							<th>{$translator['Název']}</th>
+							<th>{$translator['Počet']}</th>
+							<th>{$translator['DPH']}</th>
+							<th>{$translator['Cena bez DPH']}</th>
+							{if !$noDph}<th>{$translator['Cena s DPH']}</th>{/if}
+							<th>{$translator['Cena celkem bez DPH']}</th>
+							{if !$noDph}<th>{$translator['Cena celkem s DPH']}</th>{/if}
 						</tr>
 						{foreach $products as $p}
 						<tr {if $iterator->isEven()}class="even"{else}class="odd"{/if}>
 							<td>{$p["nazev"]}</td>
-							<td>{$p["pocet"]}</td>
+							<td>{$p["pocet"]}{$p["mj"]}</td>
 							<td>{$p["dph"]}%</td>
-							<td class="right">{$p["cena"]|number:2:',':' '}{!$data["mena"]}</td>
-							<td class="right">{$p["cena_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+							<td class="right">{$p["cena"]|number:3:',':' '}{!$data["mena"]}</td>
+							{if !$noDph}<td class="right">{$p["cena_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>{/if}
 							<td class="right">{$p["cena_celkem"]|number:2:',':' '}{!$data["mena"]}</td>
-							<td class="right">{$p["cena_celkem_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>
+							{if !$noDph}<td class="right">{$p["cena_celkem_s_dph"]|number:2:',':' '}{!$data["mena"]}</td>{/if}
 						</tr>
 						{/foreach}
 					</tbody>
 				</table>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					Razítko a podpis:
+			<tr style="border: none;">
+				<td style="width: 180px;border: none;">
+					{$translator['Razítko a podpis']}:
+					<img src="images/razitko.jpg" width="300px;" />
 				</td>
-				<td style="width: 400px;">
-					<table>
+				<td style="border: none;">
+					<table class="noBorder">
 						<tbody>
 							<tr>
-								<th class="right">Celkem:</th>
+								<th class="right">{$translator['Celkem']}:</th>
 								<td class="right">
 									{$total|number:2:',':' '}{!$data["mena"]}
 								</td class="right">
 							</tr>
+							{if $vatLower > 0 && !$noDph}
 							<tr>
-								<th class="right">Součet DPH:</th>
+								<th class="right">{$translator['Součet DPH snížená']}:</th>
 								<td class="right">
-									{$vat|number:2:',':' '}{!$data["mena"]}
+									{$vatLower|number:2:',':' '}{!$data["mena"]}
 								</td>
 							</tr>
+							{/if}
+							{if $vatBasic > 0 && !$noDph}
 							<tr>
-								<th class="right">Celkem s DPH:</th>
+								<th class="right">{$translator['Součet DPH základní']}:</th>
+								<td class="right">
+									{$vatBasic|number:2:',':' '}{!$data["mena"]}
+								</td>
+							</tr>
+							{/if}
+							{if !$noDph}
+							<tr>
+								<th class="right">{$translator['Celkem s DPH']}:</th>
 								<td class="right">
 									{$totalVat|number:2:',':' '}{!$data["mena"]}
 								</td>
 							</tr>
-							{if $round > 0}
+							{/if}
+							{if $round != 0}
 							<tr>
-								<th class="right">Zaokrouhlení:</th>
+								<th class="right">{$translator['Zaokrouhlení']}:</th>
 								<td class="right">
-									{$round|number:2:',':' '}{!$data["mena"]}
+									{$sign}{$round|number:2:',':' '}{!$data["mena"]}
 								</td>
 							</tr>
 							<tr>
-								<th class="right">Celkem částka k úhradě</th>
+								<th class="right">{$translator['Celkem částka k úhradě']}</th>
 								<td class="right">
 									{$totalVatRounded|number:2:',':' '}{!$data["mena"]}
 								</td>
@@ -148,6 +169,9 @@
 						</tbody>
 					</table>
 				</td>
+			</tr>
+			<tr class="noBorder">
+				<td style="border:none; border-top: 1px solid black;" colspan="2">{$translator['Vystavil']}: Iva Reichertová, uctarna.holzbecher@seznam.cz, 777 225 360, www.holzbecher.net</td>
 			</tr>
 		</tbody>
 	</table>
