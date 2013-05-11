@@ -49,7 +49,9 @@ class Translator{
 						"Faktura č." => "Invoice No.",
 						"Součet DPH snížená" => "Vat lower",
 						"Součet DPH základní" => "Vat basic",
-						"Vystavil" => "Created by");
+						"Vystavil" => "Created by",
+						"Proforma faktura" => "Proforma invoice",
+						"Fakturujeme vám zálohu" => "We bill you invoice");
 				
 			break;
 			case 'de':
@@ -89,7 +91,9 @@ class Translator{
 						"Faktura č." => "Faktura č.",
 						"Součet DPH snížená" => "Součet DPH snížená",
 						"Součet DPH základní" => "Součet DPH základní",
-						"Vystavil" => "Vystavil");
+						"Vystavil" => "Vystavil",
+						"Proforma faktura" => "Proforma faktura",
+						"Fakturujeme vám zálohu" => "Fakturujeme Vám zálohu");
 				
 			break;
 		}

@@ -75,6 +75,8 @@ class InvoicesPresenter extends BasePresenter
 		$form->addText('name', 'Název:')
 		->setRequired('Prosím zadejte název faktury.');
 		
+		$form->addCheckbox('proforma', "Proforma?");
+		
 		$form->addText('odberatel', "Odběratel");
 		$form->addText('prijemce', 'Příjemce');
 		

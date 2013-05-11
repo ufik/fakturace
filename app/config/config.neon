@@ -20,9 +20,9 @@ nette:
 		expiration: 14 days
 	
 	database:
-		dsn: 'mysql:host=wm9.wedos.net;dbname=d27614_holz'
-		user: a27614_holz
-		password: celeron158
+		dsn: 'mysql:host=localhost;dbname=fakturace'
+		user: root
+		password: 	
 
 
 services:

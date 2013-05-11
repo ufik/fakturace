@@ -11,6 +11,7 @@
 <table>
 	<tbody>
 			<tr><th>{label name /}</th><td>{input name}</td></tr>
+			<tr><th>{label proforma /}</th><td>{input proforma}</td></tr>
 			<tr><th>{label odberatel /}</th><td class="search">{input odberatel} <span id="odberatelJmeno">{if $odberatel} {$odberatel->name}{/if}</span><input type="hidden" name="odberatelid" id="odberatel" value="{if $odberatel}{$invoice->odberatel}{/if}" /></td></tr>
 			<tr><th>{label prijemce /}</th><td class="search">{input prijemce} <span id="prijemceJmeno">{if $prijemce} {$prijemce->name}{/if}</span><input type="hidden" name="prijemceid" id="prijemce" value="{if $prijemce}{$invoice->prijemce}{/if}" /></td></tr>
 			
@@ -98,17 +99,27 @@
             $("#frm-invoiceForm-productsAutoComplete").focus();
         }
 	});
+	$(function(){
+		$(".productRow").click(function(){
+			console.log("sd");
+			if($(this).nextSibling().hasClass("editing")){
+				$(this.nextSibling().removeClass("editing"));
+			}{
+				$(this.nextSibling().addClass("editing"));
+			}
+		});
+	});
 	
 	function createProductRow(item){
 		
 		if(typeof item.count =="undefined") item.count = 1;
 		
-		var row = "<div><input type='hidden' name='products[]' value='"+item.id+"' />";
-		row += "Název: <input type='text' name='names[]' value='"+item.value+"' />";
-		row += "Dph: <select name='dph[]'><option "+(item.dph == "0" ? "selected" : "")+" value='0'>0%</option><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select>";
-		row += "Cena: <input type='text' name='prices[]' value='"+item.price+"' />";
-		row += "Počet: <input type='text' name='counts[]' value='"+item.count+"' />";
-		row += "Mj: <input type='text' name='mj[]' value='"+item.mj+"' />";
+		var row = "<div class='productRow'>"+item.value+"</div><table class='formProducts'><input type='hidden' name='products[]' value='"+item.id+"' /><br />";
+		row += "<tr><td><input placeholder='Název' type='text' name='names[]' value='"+item.value+"' /><br />";
+		row += "<tr><td>Dph: <select name='dph[]'><option "+(item.dph == "0" ? "selected" : "")+" value='0'>0%</option><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select><br />";
+		row += "<tr><td><input placeholder='Cena' type='text' name='prices[]' value='"+item.price+"' /><br />";
+		row += "<tr><td><input placeholder='Počet' type='text' name='counts[]' value='"+item.count+"' /><br />";
+		row += "<tr><td><input placeholder='Mj' type='text' name='mj[]' value='"+item.mj+"' /><br />";
 		row += "<a href='#' onclick='$(this).parent().remove(); return false;'>&times; Smazat položku</div>";
 		
 		$("#frm-invoiceForm-productsAutoComplete").after(row);

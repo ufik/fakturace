@@ -1,5 +1,5 @@
 <div class="invoiceWrapper">
-	<h1>{$translator['Faktura č.']} {$data['number']}</h1>
+	<h1>{if $data["proforma"]}{$translator['Proforma faktura']}{else}{$translator['Faktura č.']} {$data['number']}{/if}</h1>
 	
 	<style>
 	table {
@@ -84,7 +84,7 @@
 			<tr>
 				<td colspan="2">
 				
-				<div><strong>{$translator['Fakturujeme Vám']}</strong></div>
+				<div><strong>{if $data["proforma"]}{$translator["Fakturujeme vám zálohu"]}{else}{$translator['Fakturujeme Vám']}{/if}</strong></div>
 				<div>{$data['text']}</div>
 				<br />
 				
