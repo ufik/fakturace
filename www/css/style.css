@@ -237,6 +237,11 @@ a {
 	color: white;
 }
 
+.productRow {
+	cursor: pointer;
+	margin-top: 5px;
+}
+
 table.formProducts {
 	display: none;
 }
