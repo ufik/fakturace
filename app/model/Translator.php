@@ -32,7 +32,7 @@ class Translator{
 						"Bankovní spojení" => "Bank",
 						"Swift" => "Swift",
 						"Iban" => "Iban",
-						"Fakturujeme Vám" => "We are invoicing you",
+						"Fakturujeme Vám" => "We bill you",
 						"Název" => "Name",
 						"Počet" => "Count",
 						"DPH" => "Vat",
@@ -51,7 +51,7 @@ class Translator{
 						"Součet DPH základní" => "Vat basic",
 						"Vystavil" => "Created by",
 						"Proforma faktura" => "Proforma invoice",
-						"Fakturujeme vám zálohu" => "We bill you invoice");
+						"Fakturujeme vám zálohu" => "We bill you in advance");
 				
 			break;
 			case 'de':
