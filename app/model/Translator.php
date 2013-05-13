@@ -50,7 +50,7 @@ class Translator{
 						"Součet DPH snížená" => "Vat lower",
 						"Součet DPH základní" => "Vat basic",
 						"Vystavil" => "Created by",
-						"Proforma faktura" => "Proforma invoice",
+						"Proforma faktura" => "Proforma invoice No.",
 						"Fakturujeme vám zálohu" => "We bill you in advance");
 				
 			break;
@@ -92,7 +92,7 @@ class Translator{
 						"Součet DPH snížená" => "Součet DPH snížená",
 						"Součet DPH základní" => "Součet DPH základní",
 						"Vystavil" => "Vystavil",
-						"Proforma faktura" => "Proforma faktura",
+						"Proforma faktura" => "Proforma faktura č.",
 						"Fakturujeme vám zálohu" => "Fakturujeme Vám zálohu");
 				
 			break;
