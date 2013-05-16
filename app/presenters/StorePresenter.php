@@ -25,7 +25,10 @@ class StorePresenter extends BasePresenter
 	
 	}
 	
-	public function renderAddStore($idStore){}
+	public function renderAddStore($idStore){
+		
+		$this->template->idStore = $idStore;
+	}
 	
 	protected function createComponentStoreGrid(){
 		return new StoreGrid($this->context->storeRepository);
@@ -43,9 +46,9 @@ class StorePresenter extends BasePresenter
 		$form->addText('name', 'Název:')
 		->setRequired('Prosím zadejte název dokladu.');
 		
+		$form->addText('productsAutoComplete', 'Přidat produkty:');
 		
-		
-		$form->addSubmit('send', 'Uložit fakturu');
+		$form->addSubmit('send', 'Uložit doklad')->getControlPrototype()->class('btn btn-success');
 	
 		if(array_key_exists('idStore', $_GET)){
 			$store = $this->storeRepository->findBy(array("id_store" => $_GET["idStore"]))->fetch();
@@ -54,7 +57,6 @@ class StorePresenter extends BasePresenter
 			$form->addHidden('id_store', $store->id_store);
 		}
 	
-		// call method signInFormSucceeded() on success
 		$form->onSuccess[] = $this->storeFormSucceeded;
 		return $form;
 	}

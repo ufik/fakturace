@@ -23,4 +23,7 @@ class InvoiceRepository extends Repository{
 		return $this->getTable()->where('id_invoice = ?', $idInvoice)->fetch();
 	}
 	
+
+	
+	
 }

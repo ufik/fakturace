@@ -1,6 +1,101 @@
 
 {#content}
 
-home
+<section class="home">
+	
+	<header>
+		<h1>Rozcestník</h1>
+	</header>
+	
+	<a href="{link Invoices:}">
+		<article>
+			<header>
+				<h1>Faktury</h1>
+				<h2>Přehled a správa faktur uložených v systému.</h2>
+			</header>
+		</article>
+	</a>
+	
+	<a href="{link Store:}">
+		<article>
+			<header>
+				<h1>Sklady</h1>
+				<h2>Přehled a správa skladových dokladů uložených v systému.</h2>
+			</header>
+		</article>
+	</a>
+	
+	<a href="{link Contacts:}">
+		<article>
+			<header>
+				<h1>Kontakty</h1>
+				<h2>Přehled a správa kontaktů uložených v systému.</h2>
+			</header>
+		</article>
+	</a>
+	
+	<a href="{link Products:}">
+		<article>
+			<header>
+				<h1>Produkty</h1>
+				<h2>Přehled a správa produktů uložených v systému.</h2>
+			</header>
+		</article>
+	</a>
+	
+	<a href="{link Series:}">
+		<article>
+			<header>
+				<h1>Řady faktur</h1>
+				<h2>Přehled a správa řad faktur uložených v systému. Slouží pro vytváření automatického číslování faktur.</h2>
+			</header>
+		</article>
+	</a>
+
+</section>
+
+<br style="clear: both;" />
+
+<section>
+	
+	<header>
+		<h1>Přehledy</h1>
+	</header>
+	
+	<article>
+		
+		<table class="table">
+			<tbody>
+				<thead>
+					<tr>
+						<th colspan="2">Systémová databáze obsahuje</th>
+					</tr>
+				</thead>
+				<tr>
+					<th style="width: 100px;">Faktur</th>
+					<td>{count($invoices)}</td>
+				</tr>
+				<tr>
+					<th>Vyfakturováno</th>
+					<td>{$invoicesPriceSum|number:2:',':' '}</td>
+				</tr>
+				<tr>
+					<th>Produktů</th>
+					<td>{count($products)}</td>
+				</tr>
+				<tr>
+					<th>Kontaktů</th>
+					<td>{count($contacts)}</td>
+				</tr>
+				<tr>
+					<th>Číselných řad</th>
+					<td>{count($series)}</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</article>
+	
+</section>
 
 {/#}

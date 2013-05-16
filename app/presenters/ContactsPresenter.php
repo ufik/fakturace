@@ -3,11 +3,8 @@
 namespace App;
 
 use Nette\Utils\Strings;
-
 use Nette\ObjectMixin;
-
-use Nette,
-	Model, Grid\ContactGrid;
+use Nette, Model, Grid\ContactGrid;
 
 
 /**
@@ -60,7 +57,7 @@ class ContactsPresenter extends BasePresenter{
 		
 		$form->addText('mesto', 'Město:');
 
-		$form->addSubmit('send', 'Uložit kontakt');
+		$form->addSubmit('send', 'Uložit kontakt')->getControlPrototype()->class('btn btn-success');
 		
 		if(array_key_exists('idContact', $_GET)){
 			$contact = $this->contactRepository->findBy(array("id_contact" => $_GET["idContact"]))->fetch();

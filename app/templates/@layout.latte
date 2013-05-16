@@ -33,11 +33,13 @@
 <body>
 	<script> document.body.className+=' js' </script>
 
-	<header>
+	<header class="main">
 		
-		<div class="logo"></div>
+		<div class="logo">
+		<a n:href="homepage:default" class="btn btn-primary">Přehledy</a>
+		</div>
 		
-		<a n:href="sign:out" class="logout">Odhlásit se</a>
+		<a n:href="sign:out" class="logout btn btn-danger">Odhlásit se</a>
 		
 		<a class="ajax" n:href="Settings:">
 			<div class="settings-button">
@@ -112,7 +114,7 @@
 	</div>
 	
 	<footer>
-		<a href="http://www.webcook.cz" target="_blank">Fakturace, verze: 13.132, &copy; Webcook development 2012-2013.</a>
+		<a href="http://www.webcook.cz" target="_blank">Fakturace, verze: 13.136, &copy; Webcook development 2012-2013.</a>
 	</footer>
 
 </body>

@@ -47,7 +47,7 @@ class SeriesPresenter extends BasePresenter
 		
 		$form->addText('pattern', 'Vzor řady:');
 	
-		$form->addSubmit('send', 'Uložit řadu');
+		$form->addSubmit('send', 'Uložit řadu')->getControlPrototype()->class('btn btn-success');
 	
 		if(array_key_exists('idSerie', $_GET)){
 			$serie = $this->serieRepository->findBy(array("id_serie" => $_GET["idSerie"]))->fetch();

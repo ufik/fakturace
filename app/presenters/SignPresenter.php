@@ -37,7 +37,7 @@ class SignPresenter extends Nette\Application\UI\Presenter
 
 		$form->addCheckbox('remember', 'Pamatovat si mé přihlášení?');
 
-		$form->addSubmit('send', 'Přihlásit');
+		$form->addSubmit('send', 'Přihlásit')->getControlPrototype()->class('btn btn-success');
 
 		// call method signInFormSucceeded() on success
 		$form->onSuccess[] = $this->signInFormSucceeded;

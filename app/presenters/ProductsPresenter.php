@@ -47,7 +47,7 @@ class ProductsPresenter extends BasePresenter
 	
 		$form->addText('catalogue_code', 'Katalogové číslo:');
 	
-		$form->addSubmit('send', 'Uložit produkt');
+		$form->addSubmit('send', 'Uložit produkt')->getControlPrototype()->class('btn btn-success');
 		
 		$form->setDefaults(array("mj" => "ks"));
 		

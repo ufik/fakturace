@@ -55,7 +55,7 @@ class SettingsPresenter extends BasePresenter
 		
 		//$form->addGroup("Systemové nastavení");
 		
-		$form->addSubmit('send', 'Uložit nastavení');
+		$form->addSubmit('send', 'Uložit nastavení')->getControlPrototype()->class('btn btn-success');
 	
 		$settings = $this->settingsRepository->findAll();
 		

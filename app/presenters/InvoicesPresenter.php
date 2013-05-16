@@ -107,7 +107,7 @@ class InvoicesPresenter extends BasePresenter
 		
 		$form->addText('productsAutoComplete', 'Přidat produkty:');
 		
-		$form->addSubmit('send', 'Uložit fakturu');
+		$form->addSubmit('send', 'Uložit fakturu')->getControlPrototype()->class('btn btn-success');
 	
 		if(array_key_exists('idInvoice', $_GET)){
 			$invoice = $this->invoiceRepository->findBy(array("id_invoice" => $_GET["idInvoice"]))->fetch();

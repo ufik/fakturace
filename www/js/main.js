@@ -67,3 +67,18 @@ $(function(){
 	});
 	
 });
+
+function createProductRow(item){
+	
+	if(typeof item.count =="undefined") item.count = 1;
+	
+	var row = "<div class='productRow'>"+item.value+"</div><table class='formProducts editing'><input type='hidden' name='products[]' value='"+item.id+"' /><br />";
+	row += "<tr><td><input placeholder='Název' type='text' name='names[]' value='"+item.value+"' /><br />";
+	row += "<tr><td>Dph: <select name='dph[]'><option "+(item.dph == "0" ? "selected" : "")+" value='0'>0%</option><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select><br />";
+	row += "<tr><td><input placeholder='Cena' type='text' name='prices[]' value='"+item.price+"' /><br />";
+	row += "<tr><td><input placeholder='Počet' type='text' name='counts[]' value='"+item.count+"' /><br />";
+	row += "<tr><td><input placeholder='Mj' type='text' name='mj[]' value='"+item.mj+"' /><br />";
+	row += "<a href='#' onclick='$(this).parent().remove(); return false;'>&times; Smazat položku</div>";
+	
+	$("#frm-invoiceForm-productsAutoComplete").after(row);
+}
