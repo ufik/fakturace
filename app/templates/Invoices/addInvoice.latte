@@ -47,7 +47,8 @@
 		for(var i=0; i<data.length;i++){
 			createProductRow(data[i]);
 		}
-			$(".formProducts").removeClass("editing");
+		
+		$(".formProducts").removeClass("editing");
 	});
 	
 	$(".search input").live("focus", function(){
@@ -105,7 +106,7 @@
 		$(".productRow").live("click", function(){
 			
 			var next = $(this).next().next();
-			console.log(next.hasClass("editing"));
+
 			if(next.hasClass("editing") == true){
 				next.removeClass("editing");
 			}else{

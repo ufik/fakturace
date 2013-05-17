@@ -78,7 +78,7 @@ function createProductRow(item){
 	row += "<tr><td><input placeholder='Cena' type='text' name='prices[]' value='"+item.price+"' /><br />";
 	row += "<tr><td><input placeholder='Počet' type='text' name='counts[]' value='"+item.count+"' /><br />";
 	row += "<tr><td><input placeholder='Mj' type='text' name='mj[]' value='"+item.mj+"' /><br />";
-	row += "<a href='#' onclick='$(this).parent().remove(); return false;'>&times; Smazat položku</div>";
+	row += "<a href='#' onclick='$(this).parent().parent().parent().parent().prev().prev().remove(); $(this).parent().parent().parent().parent().remove(); return false;'>&times; Smazat položku<a/>";
 	
 	$("#frm-invoiceForm-productsAutoComplete").after(row);
 }

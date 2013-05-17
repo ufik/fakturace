@@ -192,7 +192,10 @@ class InvoicesPresenter extends BasePresenter
 			}
 	
 		}
-
+		
+		// smazeme vsechny polozky a nasledne vytvorime nove
+		$this->invoiceItemsRepository->deleteItems($idInvoice);
+		
 		// ulozime prirazene produkty
 		if(array_key_exists('products', $_POST)){
 			$products = $_POST["products"];
@@ -201,10 +204,7 @@ class InvoicesPresenter extends BasePresenter
 			$prices = $_POST["prices"];
 			$counts = $_POST["counts"];
 			$mj = $_POST["mj"];
-		
-			// smazeme vsechny polozky a nasledne vytvorime nove
-			$this->invoiceItemsRepository->deleteItems($idInvoice);
-			
+
 			for ($i = 0; $i < count($products); $i++) {
 				$product = array(
 							"id_invoice" => $idInvoice,
