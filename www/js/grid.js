@@ -32,6 +32,7 @@ $(function(){
 
     $('.grid a.grid-confirm:not(.grid-ajax)').live('click', function (event) {
         var answer = confirm($(this).data("grid-confirm"));
+        
         return answer;
     });
 
@@ -40,6 +41,8 @@ $(function(){
         var answer = confirm($(this).data("grid-confirm"));
         if(answer){
             $.get(this.href);
+        }else{
+        	setTimeout(function(){$("#loader").removeClass("active")}, 150);
         }
     });
 

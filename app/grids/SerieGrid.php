@@ -24,8 +24,6 @@ class SerieGrid extends Grid{
         
         $this->setDefaultOrder("serie.id_serie DESC");
         
-        $this->setPerPageValues(array(10, 20, 50, 100));
-        
         $this->addColumn('name', 'Název řady');
         $this->addColumn('serie', 'Aktuální hodnota řady', '100px');
         $this->addColumn('pattern', 'Vzor', '100px');

@@ -6,7 +6,7 @@
     border-spacing:0;
     border-collapse:collapse;
     clear:both;
-    width: 100%;
+    width: 99%;
 }
 
 .grid input[type=submit]{

@@ -46,6 +46,7 @@
 	$.get($("#getProducts").val(), function(data){
 		for(var i=0; i<data.length;i++){
 			createProductRow(data[i]);
+			console.log("i");
 		}
 		
 		$(".formProducts").removeClass("editing");
@@ -74,6 +75,7 @@
 			 
              $("#odberatelJmeno").html(ui.item.label);
              $("#odberatel").val(ui.item.id);
+	     $("#frm-invoiceForm-datum_splatnosti").datepicker("setDate", "+" + ui.item.splatnost);
          }
 	});
 	
@@ -102,21 +104,30 @@
         }
 	});
 	
-	$(function(){
-		$(".productRow").live("click", function(){
-			
-			var next = $(this).next().next();
-
-			if(next.hasClass("editing") == true){
-				next.removeClass("editing");
-			}else{
-				next.addClass("editing");
-			}
-		});
+	$(".productRow").live("click", function(){
 		
+		var next = $(this).next().next().next().next();
+
+		if(next.hasClass("editing") == true){
+			next.removeClass("editing");
+		}else{
+			next.addClass("editing");
+		}
 	});
 	
-	
+	function createProductRow(item){
+		
+		if(typeof item.count =="undefined") item.count = 1;
+		
+		var row = "<div class='productRow'>"+item.value+"</div><a href='#' onclick='$(this).prev().remove(); $(this).next().remove(); $(this).next().next().remove(); $(this).remove(); return false;'>&times; Smazat položku<a/><table class='formProducts editing'><input type='hidden' name='products[]' value='"+item.id+"' /><br />";
+		row += "<tr><td><input placeholder='Název' type='text' name='names[]' value='"+item.value+"' /><br />";
+		row += "<tr><td>Dph: <select name='dph[]'><option "+(item.dph == "0" ? "selected" : "")+" value='0'>0%</option><option "+(item.dph == "15" ? "selected" : "")+" value='15'>15%</option><option "+(item.dph == "21" ? "selected" : "")+" value='21'>21%</option></select><br />";
+		row += "<tr><td><input placeholder='Cena' type='text' name='prices[]' value='"+item.price+"' /><br />";
+		row += "<tr><td><input placeholder='Počet' type='text' name='counts[]' value='"+item.count+"' /><br />";
+		row += "<tr><td><input placeholder='Mj' type='text' name='mj[]' value='"+item.mj+"' /><br />";
+		
+		$("#frm-invoiceForm-productsAutoComplete").after(row);
+	}
 
 </script>
 
@@ -124,6 +135,6 @@
 
 {#actionMenu}
 
-<li><a href="{link Invoices:}" class="ajax">Zpět na výpis faktur</a></li>
+<a href="{link Invoices:}" class="ajax btn btn-primary">Zpět na výpis faktur</a>
 
 {/#}

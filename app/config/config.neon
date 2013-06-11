@@ -36,5 +36,7 @@ services:
 	settingsRepository: Todo\SettingsRepository
 	invoiceItemsRepository: Todo\InvoiceItemsRepository
 	storeRepository: Todo\StoreRepository
+	storeItemsRepository: Todo\StoreItemsRepository
+	userRepository: Todo\UsersRepository
 
 factories:

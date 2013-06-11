@@ -18,16 +18,17 @@ class InvoiceGrid extends Grid{
     {
         //Vytvoříme si zdroj dat pro Grid
         //Při výběru dat vždy vybereme id
-        $source = new \NiftyGrid\NDataSource($this->invoice->select('id_invoice, name, number'));
+        $source = new \NiftyGrid\NDataSource($this->invoice->select('id_invoice, name, number, datum_vystaveni'));
         //Předáme zdroj
         $this->setDataSource($source);
         
         $this->setDefaultOrder("invoice.id_invoice DESC");
         
-        $this->setPerPageValues(array(10, 20, 50, 100));
-        
         $this->addColumn('name', 'Název faktury')
         	->setTextFilter();
+	
+	$this->addColumn('datum_vystaveni', 'Datum vystavení')
+        	->setDateFilter();
         
         $this->addColumn('number', 'Variabilní číslo', '100px')
         	->setNumericFilter();

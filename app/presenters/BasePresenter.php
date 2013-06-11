@@ -17,6 +17,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	protected function startup(){
 		parent::startup();
 		
+		setlocale(LC_ALL, 'cs_CZ.utf8');
+		
 		if (!$this->getUser()->isLoggedIn()) {
 			$this->redirect('Sign:');
 		}
@@ -29,6 +31,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		$acl->addRole('administrator', 'skladnik');
 		
 		// definice zdroju
+		$acl->addResource('error');
 		$acl->addResource('homepage');
 		$acl->addResource('contacts');
 		$acl->addResource('invoices');
@@ -36,6 +39,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		$acl->addResource('series');
 		$acl->addResource('settings');
 		$acl->addResource('store');
+		$acl->addResource('users');
 		
 		// propojeni roli a zdroju
 		$acl->allow('skladnik', array('store', 'homepage'), Permission::ALL);
@@ -47,6 +51,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		
 		
 		$hasRigths = false;
+		$check = false;
 		foreach($roles as $r){
 			$check = $acl->isAllowed($r, lcfirst($this->name), $this->action);
 				
@@ -67,8 +72,12 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 			$this->invalidateControl('content');
 			$this->invalidateControl('actionMenu');
 			$this->invalidateControl('flashMessages');
+			
+			$this->payload->presenter = $this->presenter->getName();
+			
 		}
 		
+		$this->template->user = $this->getUser()->getIdentity();
 	}
 	
 }

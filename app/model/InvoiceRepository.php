@@ -23,7 +23,17 @@ class InvoiceRepository extends Repository{
 		return $this->getTable()->where('id_invoice = ?', $idInvoice)->fetch();
 	}
 	
-
+	public function getInvoicesByCurrency($curr = "CZK", $from = null, $to = null){
+	    $query = $this->getTable()->where("mena", $curr);
+	    
+	    if($from != null)
+		$query->where("datum_vystaveni >= ?", $from);
+	    
+	    if($to != null)
+		$query->where("datum_vystaveni < ?", $to);
+	    
+	    return $query;
+	}
 	
 	
 }

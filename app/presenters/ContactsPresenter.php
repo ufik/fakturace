@@ -56,6 +56,8 @@ class ContactsPresenter extends BasePresenter{
 		$form->addText('psc', 'PSČ:');
 		
 		$form->addText('mesto', 'Město:');
+		
+		$form->addText('splatnost', 'Splatnost (dny):');
 
 		$form->addSubmit('send', 'Uložit kontakt')->getControlPrototype()->class('btn btn-success');
 		

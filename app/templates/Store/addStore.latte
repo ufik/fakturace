@@ -2,14 +2,107 @@
 
 <h1>Formulář dokladu</h1>
 
+<input type="hidden" id="autocompleteUrl" value="{link Invoices:getProducts}" />
+<input type="hidden" id="autocompleteUrlContact" value="{link Invoices:getContacts}" />
+
 <input type="hidden" id="getProducts" value="{link Store:getProductsByIdStore id => $idStore}" />
 
-{control storeForm}
+{form storeForm}
+<table>
+	<tbody>
+			<tr><th>{label name /}</th><td>{input name}</td></tr>
+			
+			{if !empty($idStore)}
+				<tr><th>{label number /}</th><td>{input number}</td></tr>
+			{else}
+				<tr><th>{label series /}</th><td>{input series}</td></tr>
+			{/if}
+			
+			<tr><th>{label odberatel /}</th><td class="search">{input odberatel} <span id="odberatelJmeno">{if $odberatel} {$odberatel->name}{/if}</span><input type="hidden" name="odberatelid" id="odberatel" value="{if $odberatel}{$store->odberatel}{/if}" /></td></tr>
+			<tr><th>{label productsAutoComplete /}</th><td>{input productsAutoComplete}</td></tr>
+			
+			<tr><th>{label send /}</th><td>{input send}</td></tr>
+	</tbody>
+</table>
+
+{/form}
+
+<script>
+	
+	$("#frm-storeForm-odberatel").val("");
+	
+	$.get($("#getProducts").val(), function(data){
+		for(var i=0; i<data.length;i++){
+			createProductRow(data[i]);
+		}
+		
+		$(".formProducts").removeClass("editing");
+	});
+	
+	$(".search input").live("focus", function(){
+		$(this).css("width", 160);
+	});
+	
+	$(".search input").live("blur", function(){
+		$(this).css("width", 30);
+	});
+	
+	$(".date").datepicker({ dateFormat: "yy-mm-dd" });
+	
+	$( "#frm-storeForm-odberatel" ).autocomplete({
+		 source: $("#autocompleteUrlContact").val(),
+         minLength: 2,
+         select: function( event, ui ) {
+             event.preventDefault();
+			 
+             $("#odberatelJmeno").html(ui.item.label);
+             $("#odberatel").val(ui.item.id);
+         }
+	});
+	
+	$( "#frm-storeForm-productsAutoComplete" ).autocomplete({
+		 source: $("#autocompleteUrl").val(),
+        minLength: 2,
+        select: function( event, ui ) {
+            event.preventDefault();
+       	 
+       	 $("#frm-storeForm-productsAutoComplete").val("");
+            
+            createProductRow(ui.item);
+            
+            $("#frm-storeForm-productsAutoComplete").focus();
+        }
+	});
+	
+	$(".productRow").live("click", function(){
+		
+		var next = $(this).next().next().next().next();
+
+		if(next.hasClass("editing") == true){
+			next.removeClass("editing");
+		}else{
+			next.addClass("editing");
+		}
+	});
+	
+	function createProductRow(item){
+		
+		if(typeof item.count =="undefined") item.count = 1;
+		
+		var row = "<div class='productRow'>"+item.value+"</div><a href='#' onclick='$(this).prev().remove(); $(this).next().remove(); $(this).next().next().remove(); $(this).remove(); return false;'>&times; Smazat položku<a/><table class='formProducts editing'><input type='hidden' name='products[]' value='"+item.id+"' /><br />";
+		row += "<tr><td>Název:<input placeholder='Název' type='text' name='names[]' value='"+item.value+"' /><br />";
+		row += "<tr><td>Počet:<input placeholder='Počet' type='text' name='counts[]' value='"+item.count+"' /><br />";
+		row += "<tr><td>MJ<input placeholder='Mj' type='text' name='mj[]' value='"+item.mj+"' /><br />";
+		
+		$("#frm-storeForm-productsAutoComplete").after(row);
+	}
+		
+</script>
 
 {/#}
 
 {#actionMenu}
 
-<li><a href="{link Store:}" class="ajax">Zpět na výpis dokladů</a></li>
+<a href="{link Store:}" class="ajax btn btn-primary">Zpět na výpis dokladů</a>
 
 {/#}

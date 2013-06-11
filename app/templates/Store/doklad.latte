@@ -1,0 +1,80 @@
+<div class="invoiceWrapper">
+	<h1>{$translator['Doklad č.']}  {$data['number']}</h1>
+	
+	<style>
+	table {
+		width: 100%;
+		text-align: left;
+		vertical-align: top;
+	}
+	
+	.right{
+		text-align: right;
+	}
+	
+	table, th, td {
+		border: 1px solid #000;
+		border-collapse: collapse;
+		padding: 8px;
+	}
+	
+	table.noBorder, table.noBorder th, table.noBorder td {
+		border: none;
+		padding: 1px;
+	}
+	
+	
+	.even {
+		background-color: #F2F2F2;
+	}
+	
+	</style>
+	
+	<table>
+		<tbody>
+			<tr>
+				<th>{$translator['Dodavatel']}</th>
+				<th>{$translator['Odběratel']}</th>
+			</tr>
+			<tr>
+				<td style="width: 50%;">
+					<div>{$settings['invoice_company']}</div>
+					<div>{$settings['invoice_street']}</div>
+					<div>{$settings['invoice_psc']} {$settings['invoice_city']}</div>
+					<div>{$translator['IČ']}: {$settings['invoice_ic']}</div>
+					<div>{$translator['DIČ']}: {$settings['invoice_dic']}</div>
+					<div>{$settings['invoice_registration']}</div>
+				</td>
+				<td>
+					<div>{$odberatel['name']}</div>
+					<div>{$odberatel['ulice']}</div>
+					<div>{$odberatel['psc']} {$odberatel['mesto']}</div>
+					<div>{$translator['IČ']}: {$odberatel['ico']}</div>
+					<div>{$translator['DIČ']}: {$odberatel['dic']}</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					
+				<table class="invoice-items">
+					<tbody>
+						<tr>
+							<th>{$translator['Název']}</th>
+							<th>{$translator['Počet']}</th>
+						</tr>
+						{foreach $products as $p}
+						<tr {if $iterator->isEven()}class="even"{else}class="odd"{/if}>
+							<td>{$p["name"]}</td>
+							<td>{$p["count"]}{$p["mj"]}</td>
+						</tr>
+						{/foreach}
+					</tbody>
+				</table>
+				</td>
+			</tr>
+			<tr class="noBorder">
+				<td style="border:none; border-top: 1px solid black;" colspan="2">{$translator['Vystavil']}: {$user->name}, {$user->email}, {$user->phone}, www.holzbecher.net</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

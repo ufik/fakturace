@@ -19,4 +19,7 @@ class StoreRepository extends Repository{
 		return $this->getTable()->where('id_store = ?', $data["id_store"])->update($data);
 	}
 	
+	public function getStore($idStore){
+		return $this->getTable()->where('id_store = ?', $idStore)->fetch();
+	}
 }

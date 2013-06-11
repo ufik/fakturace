@@ -24,13 +24,18 @@ class StoreGrid extends Grid{
         
         $this->setDefaultOrder("store.id_store DESC");
         
-        $this->setPerPageValues(array(10, 20, 50, 100));
-        
         $this->addColumn('name', 'Název dokladu');
         $this->addColumn('date', 'Datum vytvoření', '100px');
         $this->addColumn('id_user', 'Vlastník', '100px');
         
         $self = $presenter;
+        
+        $this->addButton("print", "Tisk PDF")
+        ->setAjax(false)
+        ->setClass("print new-page")
+        ->setLink(function($row) use ($self){
+        	return $self->link("printStore", $row['id_store']);
+        });
         
         $this->addButton("edit", "Upravit")
         ->setClass("edit")

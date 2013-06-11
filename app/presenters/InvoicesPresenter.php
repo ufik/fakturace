@@ -45,7 +45,6 @@ class InvoicesPresenter extends BasePresenter
 		
 		$invoice = $this->invoiceRepository->getInvoice($idInvoice);
 		
-		// TODO refractoring ty dobytku
 		if(!empty($idInvoice)){			
 			$this->template->odberatel = $this->contactRepository->findBy(array("id_contact" => $invoice->odberatel))->fetch();
 			$this->template->prijemce = $this->contactRepository->findBy(array("id_contact" => $invoice->prijemce))->fetch();
@@ -147,7 +146,8 @@ class InvoicesPresenter extends BasePresenter
 		foreach($contacts as $c){
 			$returnVals[] = array(
 					"label" => $c->name,
-					"id" => $c->id_contact
+					"id" => $c->id_contact,
+					"splatnost" => $c->splatnost
 			);
 		}
 	
@@ -219,8 +219,8 @@ class InvoicesPresenter extends BasePresenter
 			}
 		
 		}
-		
-		$this->redirect("Invoices:");
+		$this->payload->presenter = $this->presenter->getName();
+		//$this->redirect("Invoices:");
 	}
 	
 	public function actionGetProductsByIdInvoice($id){

@@ -1,99 +1,88 @@
 
 {#content}
 
-<section class="home">
-	
-	<header>
-		<h1>Rozcestník</h1>
-	</header>
-	
-	<a href="{link Invoices:}" class="ajax">
-		<article>
-			<header>
-				<h1>Faktury</h1>
-				<h2>Přehled a správa faktur uložených v systému.</h2>
-			</header>
-		</article>
-	</a>
-	
-	<a href="{link Store:}" class="ajax">
-		<article>
-			<header>
-				<h1>Sklady</h1>
-				<h2>Přehled a správa skladových dokladů uložených v systému.</h2>
-			</header>
-		</article>
-	</a>
-	
-	<a href="{link Contacts:}" class="ajax">
-		<article>
-			<header>
-				<h1>Kontakty</h1>
-				<h2>Přehled a správa kontaktů uložených v systému.</h2>
-			</header>
-		</article>
-	</a>
-	
-	<a href="{link Products:}" class="ajax">
-		<article>
-			<header>
-				<h1>Produkty</h1>
-				<h2>Přehled a správa produktů uložených v systému.</h2>
-			</header>
-		</article>
-	</a>
-	
-	<a href="{link Series:}" class="ajax">
-		<article>
-			<header>
-				<h1>Řady faktur</h1>
-				<h2>Přehled a správa řad faktur uložených v systému. Slouží pro vytváření automatického číslování faktur.</h2>
-			</header>
-		</article>
-	</a>
-
-</section>
-
-<br style="clear: both;" />
-
 <section>
-	
-	<header>
-		<h1>Přehledy</h1>
-	</header>
-	
+		
 	<article>
 		
 		<table class="table">
 			<tbody>
 				<thead>
-					<tr>
-						<th colspan="2">Systémová databáze obsahuje</th>
-					</tr>
+				    <tr n:href="">
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;">CZK</td>
+					<td style="width: 100px;">EUR (<a n:href='Settings:default' class="ajax" data-nameseo="Settings">Kurz = {$settings['course']}</a>)</td>
+					<td style="width: 100px;">Celkem</td>
+				    </tr>
 				</thead>
 				<tr>
-					<th style="width: 100px;">Faktur</th>
-					<td>{count($invoices)}</td>
+					<th>Faktur</th>
+					<td>{$czeCount}</td>
+					<td>{$eurCount}</td>
+					<td>{$czeCount + $eurCount}</td>
 				</tr>
 				<tr>
-					<th>Vyfakturováno</th>
-					<td>{$invoicesPriceSum|number:2:',':' '}</td>
+					<th>Vyfakturováno tento měsíc</th>
+					<td>{$invoicesSum[0]['CZE']|number:2:',':' '}Kč</td>
+					<td>{$invoicesSum[0]['EUR']|number:2:',':' '}EUR ({$invoicesSum[0]['EURc']|number:2:',':' '}Kč)</td>
+					<td>{$invoicesSum[0]['CZE'] + $invoicesSum[0]['EURc']|number:2:',':' '}Kč</td>
+				</tr>
+				<tr>
+					<th>Vyfakturováno minulý měsíc</th>
+					<td>{$invoicesSum[1]['CZE']|number:2:',':' '}Kč</td>
+					<td>{$invoicesSum[1]['EUR']|number:2:',':' '}EUR ({$invoicesSum[1]['EURc']|number:2:',':' '}Kč)</td>
+					<td>{$invoicesSum[1]['CZE'] + $invoicesSum[1]['EURc']|number:2:',':' '}Kč</td>
+				</tr>
+				<tr>
+					<th>Vyfakturováno celkově</th>
+					<td>{$sums['total']['CZE']|number:2:',':' '}Kč</td>
+					<td>{$sums['total']['EUR']|number:2:',':' '}EUR ({$sums['total']['EURc']|number:2:',':' '}Kč)</td>
+					<td>{$sums['total']['CZE'] + $sums['total']['EURc']|number:2:',':' '}Kč</td>
 				</tr>
 				<tr>
 					<th>Produktů</th>
-					<td>{count($products)}</td>
+					<td colspan="2">{count($products)}</td>
+					<td></td>
 				</tr>
 				<tr>
 					<th>Kontaktů</th>
-					<td>{count($contacts)}</td>
+					<td colspan="2">{count($contacts)}</td>
+					<td></td>
 				</tr>
 				<tr>
 					<th>Číselných řad</th>
-					<td>{count($series)}</td>
+					<td colspan="2">{count($series)}</td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
 		
+	    <div class="plot">
+		<canvas id="cvs" width="800" height="400">[No canvas support]</canvas>
+
+		<script>
+		    $(function ()
+		    {
+			
+			data = new Array();
+			tooltips = new Array();
+			labels = new Array();
+			{foreach $invoicesSum as $monthSum}
+				labels.push({$monthSum["label"]});
+				data.push({$monthSum["CZE"] + $monthSum["EURc"]});
+				tooltips.push("Celkem korun = " + {$monthSum["CZE"] + $monthSum["EURc"]|number:2:',':' '} + "(" + {$monthSum["CZE"]|number:2:',':' '} + "/" + {$monthSum["EURc"]|number:2:',':' '} + ")");
+			{/foreach}
+			
+			var bar4 = new RGraph.Line('cvs', data)
+			    .Set('colors', ['#2A17B1', '#98ED00'])
+			    .Set('labels', labels)
+			    .Set('gutter.left', 35)
+			    .Set('tooltips', tooltips)
+			    .Draw();
+		    });
+		</script>
+	    </div>
+	    
 	</article>
 	
 </section>

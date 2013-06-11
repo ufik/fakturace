@@ -24,8 +24,6 @@ class ProductGrid extends Grid{
         
         $this->setDefaultOrder("product.id_product DESC");
         
-        $this->setPerPageValues(array(10, 20, 50, 100));
-        
         $this->addColumn('name', 'Název produktu')->setTextFilter();
         $this->addColumn('catalogue_code', 'Katalogové číslo', '100px')->setTextFilter();
         $this->addColumn('price', 'Cena', '100px')->setNumericFilter();
