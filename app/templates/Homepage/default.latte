@@ -67,6 +67,7 @@
 			data = new Array();
 			tooltips = new Array();
 			labels = new Array();
+			console.log({$invoicesSum});
 			{foreach $invoicesSum as $monthSum}
 				labels.push({$monthSum["label"]});
 				data.push({$monthSum["CZE"] + $monthSum["EURc"]});

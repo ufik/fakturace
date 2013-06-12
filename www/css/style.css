@@ -151,7 +151,8 @@ footer a{
 
 .leftMenu a.menu-item{
 	display: inline-block;
-	width: 40px;
+	font-size: 0px;
+	min-width: 40px;
 	overflow: hidden;
 	float: left;
 	height: 32px;
@@ -160,75 +161,74 @@ footer a{
 	padding-bottom: 1px;
 	text-align: left;
 	padding-left: 5px;
-	-webkit-transition: all 1s;
-	-moz-transition: all 1s;
+	transition: all 1s;
+	-webkit-transition: all .5s;
+	-moz-transition: all .5s;
 }
 
 .leftMenu a.menu-item:hover, .leftMenu a.menu-item.selected {
-	width: 130px;
+	background: none;
+	background-position: -40px 50%;
+	font-size: 14px;
 	text-align: center;
-	-webkit-transition: all 1s;
-	-moz-transition: all 1s;
+	transition: all 1s;
+	-webkit-transition: all .5s;
+	-moz-transition: all .5s;
 }
 
 .leftMenu a.menu-item.btnStats {
-    background: url('../images/icon-set.png') -261px 120px;
-    font-size: 0px;
+    background: url('../images/stats.png') 50% 50%;
+    background-repeat: no-repeat;
+    
 }
 
-.leftMenu a.menu-item.btnStats:hover, .leftMenu a.menu-item.btnStats.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnStats:hover,  .leftMenu a.menu-item.btnStats.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu a.menu-item.btnContacts {
-    background: url('../images/icon-set.png') -99px 380px;
-    font-size: 0px;
+    background: url('../images/contacts.png') 50% 50%;
+    background-repeat: no-repeat;
 }
 
-.leftMenu a.menu-item.btnContacts:hover, .leftMenu a.menu-item.btnContacts.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnContacts:hover,  .leftMenu a.menu-item.btnContacts.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu a.menu-item.btnProducts {
-    background: url('../images/icon-set.png') -99px 326px;
-    font-size: 0px;
+    background: url('../images/products.png') 50% 50%;
+    background-repeat: no-repeat;
 }
 
-.leftMenu a.menu-item.btnProducts:hover, .leftMenu a.menu-item.btnProducts.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnProducts:hover,  .leftMenu a.menu-item.btnProducts.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu a.menu-item.btnRows {
-    background: url('../images/icon-set.png') -339px 120px;
-    font-size: 0px;
+    background: url('../images/series.png') 50% 50%;
+    background-repeat: no-repeat;
 }
 
-.leftMenu a.menu-item.btnRows:hover, .leftMenu a.menu-item.btnRows.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnRows:hover,  .leftMenu a.menu-item.btnRows.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu a.menu-item.btnInvoices {
-    background: url('../images/icon-set.png') -724px 170px;
-    font-size: 0px;
+    background: url('../images/invoices.png') 50% 50%;
+    background-repeat: no-repeat;
 }
 
-.leftMenu a.menu-item.btnInvoices:hover, .leftMenu a.menu-item.btnInvoices.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnInvoices:hover,  .leftMenu a.menu-item.btnInvoices.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu a.menu-item.btnStores {
-    background: url('../images/icon-set.png') -651px 430px;
-    font-size: 0px;
+    background: url('../images/stores.png') 50% 50%;
+    background-repeat: no-repeat;
 }
 
-.leftMenu a.menu-item.btnStores:hover, .leftMenu a.menu-item.btnStores.selected {
-	background: none;
-	font-size: 14px;
+.leftMenu a.menu-item.btnStores:hover,  .leftMenu a.menu-item.btnStores.selected{
+    background-position: -40px 50%;
 }
 
 .leftMenu .messenger{
@@ -1298,4 +1298,96 @@ section.home article header h1 {
 section.home article header h2 {
 	font-size: 14px;
 	color: grey;
+}
+
+
+@media screen and (min-width: 320px) and (max-width: 1024px){
+    
+    
+    /* Sizing */
+    body{
+	font-size: 1.6em;
+    }
+    
+    .content{
+	top: 180px;
+    }
+    
+     /* Hidden elements */
+    .users, .logout{
+	display: none;
+    }
+    
+    header.main{
+	height: 180px;
+    }
+    
+    .leftMenu{
+	height: 180px;
+    }
+    
+    /* Main menu and action menu */
+    .leftMenu a.menu-item {
+	height: 130px;
+	width: 130px;
+	background-size: 130px 130px;
+    }
+    
+    .leftMenu a.menu-item:hover, .leftMenu a.menu-item.selected{
+	font-size: 0em;
+	background-size: 139px 139px;
+    }
+    
+    .leftMenu a.menu-item.btnStats:hover,  .leftMenu a.menu-item.btnStats.selected{
+	background-position: 50% 50%;
+    }
+    
+    .leftMenu a.menu-item.btnContacts:hover,  .leftMenu a.menu-item.btnContacts.selected{
+	background-position: 50% 50%;
+    }
+    
+    .leftMenu a.menu-item.btnProducts:hover,  .leftMenu a.menu-item.btnProducts.selected{
+	background-position: 50% 50%;
+    }
+    
+    .leftMenu a.menu-item.btnRows:hover,  .leftMenu a.menu-item.btnRows.selected{
+	background-position: 50% 50%;
+    }
+    
+    .leftMenu a.menu-item.btnInvoices:hover,  .leftMenu a.menu-item.btnInvoices.selected{
+	background-position: 50% 50%;
+    }
+    
+    .leftMenu a.menu-item.btnStores:hover,  .leftMenu a.menu-item.btnStores.selected{
+	background-position: 50% 50%;
+    }
+    
+    .settings-button{
+	height: 90px;
+	width: 90px;
+	background-size: 80px 80px;
+    }
+    
+    /* Forms */
+    input[type=text], input[type=url], input[type=email], input[type=password], input[type=tel], select {
+	-webkit-appearance: none; -moz-appearance: none;
+	display: block;
+	margin: 0;
+	width: 100%; height: 90px;
+	line-height: 90px; font-size: 1.6em;
+      }
+      
+    .btn-success, .btn-danger{
+	font-size: 2em;
+	width: 100%;
+	height: 3em;
+    }
+    
+    form table tr th{
+	display: none;
+    }
+    
+    table, table td, input{
+	width: 100%;
+    }
 }

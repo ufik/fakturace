@@ -32,6 +32,8 @@ class InvoiceRepository extends Repository{
 	    if($to != null)
 		$query->where("datum_vystaveni < ?", $to);
 	    
+	    $query->order("datum_vystaveni DESC");
+	    
 	    return $query;
 	}
 	

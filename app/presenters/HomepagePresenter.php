@@ -74,6 +74,8 @@ class HomepagePresenter extends BasePresenter{
 		    $invoices[$i] = $this->__getInvoicesByMonth($i);
 		}
 		
+		$invoices = array_reverse($invoices);
+		
 		$totalCZE = $this->invoiceRepository->getInvoicesByCurrency('CZK');
 		$totalEUR = $this->invoiceRepository->getInvoicesByCurrency('EUR');
 		

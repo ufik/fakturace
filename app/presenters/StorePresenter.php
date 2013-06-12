@@ -69,7 +69,8 @@ class StorePresenter extends BasePresenter
 		$form->getElementPrototype()->class = "ajax";
 	
 		$form->addText('name', 'Název:')
-		->setRequired('Prosím zadejte název dokladu.');
+		->setRequired('Prosím zadejte název dokladu.')
+		->getControlPrototype()->placeholder("Název");
 		
 		$series = $this->serieRepository->findAll();
 		
@@ -84,8 +85,8 @@ class StorePresenter extends BasePresenter
 			$form->addSelect('series', 'Řada dokladu', $selectSeries);
 		}
 		
-		$form->addText('odberatel', "Odběratel");
-		$form->addText('productsAutoComplete', 'Přidat produkty:');
+		$form->addText('odberatel', "Odběratel")->getControlPrototype()->placeholder("Odběratel");
+		$form->addText('productsAutoComplete', 'Přidat produkty:')->getControlPrototype()->placeholder("Přidat produkty:");
 		
 		$form->addSubmit('send', 'Uložit doklad')->getControlPrototype()->class('btn btn-success');
 	
