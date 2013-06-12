@@ -120,12 +120,51 @@ class HomepagePresenter extends BasePresenter{
 	    $monthsAgoString = "-$monthsAgo month";
 	    $invoices = array();
 	    
-	    $invoices["label"] = date("F", strtotime($monthsAgoString));
+	    $invoices["label"] = $this->__translateMonth(date("F", strtotime($monthsAgoString)));
 	    $invoices["CZE"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('CZK', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))));
 	    $invoices["EUR"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('EUR', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))));
 	    $invoices["EURc"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('EUR', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))), $this->settings['course']);
 	    
 	    return $invoices;
+	}
+	
+	/**
+	 * 
+	 * @param type $motnh
+	 * @return type
+	 */
+	private function __translateMonth($motnh){
+	    
+	    $search = array(
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"November",
+		"December"
+	    );
+	    
+	    $replace = array(
+		"Leden",
+		"Ůnor",
+		"Březen",
+		"Duben",
+		"Květen",
+		"Červen",
+		"Červenec",
+		"Srpen",
+		"Září",
+		"Říjen",
+		"Listopad",
+		"Prosinec"
+	    );
+	    
+	    return str_replace($search, $replace, $motnh);
 	}
 
 }
