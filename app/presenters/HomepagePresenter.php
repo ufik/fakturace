@@ -78,15 +78,20 @@ class HomepagePresenter extends BasePresenter{
 		
 		$totalCZE = $this->invoiceRepository->getInvoicesByCurrency('CZK');
 		$totalEUR = $this->invoiceRepository->getInvoicesByCurrency('EUR');
+		$totalCHF = $this->invoiceRepository->getInvoicesByCurrency('CHF');
 		
 		$sums['total']['CZE'] = $this->__countInvoicesSum($totalCZE);
 		$sums['total']['EUR'] = $this->__countInvoicesSum($totalEUR);
 		$sums['total']['EURc'] = $this->__countInvoicesSum($totalEUR, $this->settings['course']);
 		
+		$sums['total']['CHF'] = $this->__countInvoicesSum($totalEUR);
+		$sums['total']['CHFc'] = $this->__countInvoicesSum($totalEUR, $this->settings['courseCHF']);
+		
 		$this->template->invoicesSum = $invoices;
 		$this->template->settings = $this->settings;
 		$this->template->czeCount = count($totalCZE);
 		$this->template->eurCount = count($totalEUR);
+		$this->template->chfCount = count($totalCHF);
 		$this->template->sums = $sums;
 	}
 	
@@ -124,6 +129,8 @@ class HomepagePresenter extends BasePresenter{
 	    $invoices["CZE"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('CZK', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))));
 	    $invoices["EUR"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('EUR', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))));
 	    $invoices["EURc"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('EUR', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))), $this->settings['course']);
+	    $invoices["CHF"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('CHF', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))));
+	    $invoices["CHFc"] = $this->__countInvoicesSum($this->invoiceRepository->getInvoicesByCurrency('CHF', date("Y-m-1", strtotime($monthsAgoString)), date("Y-m-t", strtotime($monthsAgoString))), $this->settings['courseCHF']);
 	    
 	    return $invoices;
 	}

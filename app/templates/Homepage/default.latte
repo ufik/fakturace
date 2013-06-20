@@ -12,6 +12,7 @@
 					<td style="width: 100px;"></td>
 					<td style="width: 100px;">CZK</td>
 					<td style="width: 100px;">EUR (<a n:href='Settings:default' class="ajax" data-nameseo="Settings">Kurz = {$settings['course']}</a>)</td>
+					<td style="width: 100px;">FRF (<a n:href='Settings:default' class="ajax" data-nameseo="Settings">Kurz = {$settings['courseCHF']}</a>)</td>
 					<td style="width: 100px;">Celkem</td>
 				    </tr>
 				</thead>
@@ -19,25 +20,29 @@
 					<th>Faktur</th>
 					<td>{$czeCount}</td>
 					<td>{$eurCount}</td>
-					<td>{$czeCount + $eurCount}</td>
+					<td>{$chfCount}</td>
+					<td>{$czeCount + $eurCount + $chfCount}</td>
 				</tr>
 				<tr>
 					<th>Vyfakturováno tento měsíc</th>
 					<td>{$invoicesSum[5]['CZE']|number:2:',':' '}Kč</td>
 					<td>{$invoicesSum[5]['EUR']|number:2:',':' '}EUR ({$invoicesSum[5]['EURc']|number:2:',':' '}Kč)</td>
-					<td>{$invoicesSum[5]['CZE'] + $invoicesSum[5]['EURc']|number:2:',':' '}Kč</td>
+					<td>{$invoicesSum[5]['CHF']|number:2:',':' '}EUR ({$invoicesSum[5]['CHFc']|number:2:',':' '}Kč)</td>
+					<td>{$invoicesSum[5]['CZE'] + $invoicesSum[5]['EURc'] + $invoicesSum[5]['CHFc']|number:2:',':' '}Kč</td>
 				</tr>
 				<tr>
 					<th>Vyfakturováno minulý měsíc</th>
 					<td>{$invoicesSum[4]['CZE']|number:2:',':' '}Kč</td>
 					<td>{$invoicesSum[4]['EUR']|number:2:',':' '}EUR ({$invoicesSum[4]['EURc']|number:2:',':' '}Kč)</td>
-					<td>{$invoicesSum[4]['CZE'] + $invoicesSum[4]['EURc']|number:2:',':' '}Kč</td>
+					<td>{$invoicesSum[4]['CHF']|number:2:',':' '}EUR ({$invoicesSum[4]['CHFc']|number:2:',':' '}Kč)</td>
+					<td>{$invoicesSum[4]['CZE'] + $invoicesSum[4]['EURc'] + $invoicesSum[4]['CHFc']|number:2:',':' '}Kč</td>
 				</tr>
 				<tr>
 					<th>Vyfakturováno celkově</th>
 					<td>{$sums['total']['CZE']|number:2:',':' '}Kč</td>
 					<td>{$sums['total']['EUR']|number:2:',':' '}EUR ({$sums['total']['EURc']|number:2:',':' '}Kč)</td>
-					<td>{$sums['total']['CZE'] + $sums['total']['EURc']|number:2:',':' '}Kč</td>
+					<td>{$sums['total']['CHF']|number:2:',':' '}EUR ({$sums['total']['CHFc']|number:2:',':' '}Kč)</td>
+					<td>{$sums['total']['CZE'] + $sums['total']['EURc'] + $sums['total']['CHFc']|number:2:',':' '}Kč</td>
 				</tr>
 				<tr>
 					<th>Produktů</th>
@@ -70,8 +75,8 @@
 			console.log({$invoicesSum});
 			{foreach $invoicesSum as $monthSum}
 				labels.push({$monthSum["label"]});
-				data.push({$monthSum["CZE"] + $monthSum["EURc"]});
-				tooltips.push("Celkem korun = " + {$monthSum["CZE"] + $monthSum["EURc"]|number:2:',':' '} + "(" + {$monthSum["CZE"]|number:2:',':' '} + "/" + {$monthSum["EURc"]|number:2:',':' '} + ")");
+				data.push({$monthSum["CZE"] + $monthSum["EURc"] + $monthSum["CHFc"]});
+				tooltips.push("Celkem korun = " + {$monthSum["CZE"] + $monthSum["EURc"] + $monthSum["CHFc"]|number:2:',':' '});
 			{/foreach}
 			
 			var bar4 = new RGraph.Line('cvs', data)

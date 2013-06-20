@@ -102,7 +102,7 @@ class InvoicesPresenter extends BasePresenter
 		$form->addText('constant_code', 'Konstantní symbol:');
 		$form->addText('payment_type', 'Způsob úhrady:');
 		
-		$form->addSelect('mena', 'Měna:', array("CZK" => "CZK", "EUR" => "EUR"));
+		$form->addSelect('mena', 'Měna:', array("CZK" => "CZK", "EUR" => "EUR", "CHF" => "CHF"));
 		
 		$form->addText('productsAutoComplete', 'Přidat produkty:');
 		
@@ -330,7 +330,7 @@ class InvoicesPresenter extends BasePresenter
 		
 		// pokud je mena euro, nepocitame s DPH
 		$noDph = false;
-		if($data['mena'] == "EUR"){
+		if($data['mena'] == "EUR" || $data['mena'] == 'CHF'){
 			$noDph = true;
 		}
 		
@@ -370,8 +370,10 @@ class InvoicesPresenter extends BasePresenter
 		if($data["mena"] == "EUR"){
 			$data["mena"] = "&euro;";
 			$data['international'] = true;
-		}
-		else $data["mena"] = " Kč";
+		}else if($data['mena'] == 'CHF'){
+			$data["mena"] = " CHF";
+			$data['international'] = true;
+		}else $data["mena"] = " Kč";
 		
 		if(!$data['international']){
 		

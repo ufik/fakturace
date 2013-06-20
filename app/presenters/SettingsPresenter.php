@@ -33,7 +33,8 @@ class SettingsPresenter extends BasePresenter
 		$form->getElementPrototype()->class = "ajax";
 		
 		$form->addGroup("Základní nastavení");
-		$form->addText('course', 'Kurz:');
+		$form->addText('course', 'Kurz Eura:');
+		$form->addText('courseCHF', 'Kurz FRF:');
 		
 		$form->addGroup("Dodavatel - fakturace");
 		$form->addText('invoice_company', 'Jméno společnosti:');
